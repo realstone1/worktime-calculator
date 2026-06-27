@@ -324,7 +324,7 @@
       font-weight: 750;
     }
 
-    tr.short-overtime td {
+    td.short-overtime-cell {
       background: #fff4e5;
     }
 
@@ -939,9 +939,6 @@
       if (type === "특근") return "pending";
       if (type === "휴일") return "holiday";
       if (isWeekendIndex(index)) classes.push("weekend");
-      if (result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour) {
-        classes.push("short-overtime");
-      }
       return classes.join(" ");
     }
 
@@ -957,6 +954,7 @@
         const needsClock = day.workType === "출근" || day.workType === "외출";
         const needsOuting = day.workType === "외출";
         const isLowWork = needsClock && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour;
+        const isShortOvertime = result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour;
 
         tr.innerHTML = `
           <td>
@@ -976,7 +974,7 @@
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
           <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
-          <td><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
+          <td class="${isShortOvertime ? "short-overtime-cell" : ""}"><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
           <td><input class="cell-input" type="number" min="0" step="10" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
           <td><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
           <td><span class="output">${result.requestStart || "-"}</span></td>
