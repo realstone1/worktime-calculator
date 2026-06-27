@@ -306,6 +306,14 @@
 
     tr.low-work td {
       background: #fff1f1;
+      color: var(--red);
+      font-weight: 750;
+    }
+
+    tr.low-work input,
+    tr.low-work select {
+      color: var(--red);
+      font-weight: 750;
     }
 
     tr.short-overtime td {
@@ -581,7 +589,7 @@
         <span class="pill">PMS 부족 판정 = PMS 공수 합계</span>
         <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
         <span class="pill">특근 계산은 보류</span>
-        <span class="pill">연한 빨강: 체류시간 8시간 이하</span>
+        <span class="pill">연한 빨강: 체류시간 8시간 미만</span>
         <span class="pill">연한 주황: 연장 신청 1시간 미만</span>
       </div>
     </div>
@@ -920,7 +928,7 @@
       if (type === "특근") return "pending";
       if (type === "휴일") return "holiday";
       if (isWeekendIndex(index)) classes.push("weekend");
-      if ((type === "출근" || type === "외출") && result.workSeconds > 0 && result.workSeconds <= 8 * CONFIG.hour) {
+      if ((type === "출근" || type === "외출") && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour) {
         classes.push("low-work");
       }
       if (result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour) {
