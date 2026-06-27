@@ -328,6 +328,12 @@
       background: #fff4e5;
     }
 
+    td.adjusted-overtime-cell {
+      background: #ecfdf3;
+      color: var(--green);
+      font-weight: 750;
+    }
+
     .date-cell {
       display: grid;
       gap: 2px;
@@ -484,7 +490,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-27 23:28</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 00:24</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -513,8 +519,8 @@
           <col style="width: 76px">
           <col style="width: 76px">
           <col style="width: 80px">
-          <col style="width: 66px">
           <col style="width: 80px">
+          <col style="width: 66px">
           <col style="width: 78px">
           <col style="width: 76px">
           <col style="width: 76px">
@@ -533,14 +539,14 @@
             <th><span class="th-title">비업무<br>시간 <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">외출<br>시작시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 시작시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">외출<br>종료시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 종료시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 연장근무 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">실제<br>연장근무 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">조정 <span class="th-help" tabindex="0" data-help="실제 연장근무 시간에서 제외할 시간을 분 단위로 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>신청량 <span class="th-help" tabindex="0" data-help="10분 단위, 최소 1시간, 4시간 이상 신청 시 30분 차감 규칙을 반영한 잔근 신청량입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">연장 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청량을 기준으로 계산된 연장근무 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
-            <th><span class="th-title">연장 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 연장근무 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
-            <th><span class="th-title">PMS<br>공수 <span class="th-help" tabindex="0" data-help="PMS에 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청량을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청량입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">실제<br>잔근 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이나 수동 시뮬레이션을 위해 실제 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분) 차감을 반영한 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청 시간을 기준으로 계산된 잔근 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
+            <th><span class="th-title">잔근 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
+            <th><span class="th-title">PMS<br>공수 <span class="th-help" tabindex="0" data-help="PMS에 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="최대 신청 가능 잔근에서 주 12시간 한도와 PMS 공수 조건을 맞추기 위해 줄인 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
@@ -601,7 +607,7 @@
         <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
         <span class="pill">특근 계산은 보류</span>
         <span class="pill">연한 빨강: 체류시간 8시간 미만</span>
-        <span class="pill">연한 주황: 연장 신청 1시간 미만</span>
+        <span class="pill">연한 주황: 잔근 신청 1시간 미만</span>
       </div>
     </div>
   </section>
@@ -742,11 +748,24 @@
       const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
       const base = floorToStepMinutes(adjustedMinutes);
       if (base < CONFIG.minOvertimeRequestMinutes) return 0;
-      if (base >= CONFIG.requestBreakTriggerMinutes + CONFIG.requestBreakMinutes) {
-        return base - CONFIG.requestBreakMinutes;
+      const requestableMinutes = requestMinutesFromApplicationDuration(base);
+      return requestableMinutes >= CONFIG.minOvertimeRequestMinutes ? requestableMinutes : 0;
+    }
+
+    function requestMinutesFromApplicationDuration(applicationMinutes) {
+      return Math.max(0, applicationMinutes - breakSecondsForStay(applicationMinutes * CONFIG.minute) / CONFIG.minute);
+    }
+
+    function requestApplicationDurationMinutes(requestMinutes, actualOvertimeSeconds, adjustmentMinutes) {
+      if (requestMinutes <= 0) return 0;
+      const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
+      const maxApplicationMinutes = floorToStepMinutes(adjustedMinutes);
+      for (let minutes = maxApplicationMinutes; minutes >= 0; minutes -= CONFIG.overtimeStepMinutes) {
+        if (requestMinutesFromApplicationDuration(minutes) <= requestMinutes) {
+          return minutes;
+        }
       }
-      if (base >= CONFIG.requestBreakTriggerMinutes) return CONFIG.requestBreakTriggerMinutes - 10;
-      return base;
+      return requestMinutes;
     }
 
     function isWeekendIndex(index) {
@@ -855,8 +874,13 @@
       const roundedWorkMinutes = roundPmsMinutes(workSeconds);
       const pmsMinutes = Math.max(0, roundedWorkMinutes - requestMinutes);
       const requestEndSeconds = requestMinutes > 0 ? floorSecondsToStep(endSeconds) : null;
+      const requestApplicationMinutes = requestApplicationDurationMinutes(
+        requestMinutes,
+        actualOvertimeSeconds,
+        adjustmentMinutes
+      );
       const requestStartSeconds = requestMinutes > 0
-        ? requestEndSeconds - requestMinutes * CONFIG.minute
+        ? requestEndSeconds - requestApplicationMinutes * CONFIG.minute
         : null;
 
       base.workSeconds = workSeconds;
@@ -979,6 +1003,7 @@
         const needsOuting = day.workType === "외출";
         const isLowWork = needsClock && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour;
         const isShortOvertime = result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour;
+        const isAdjustedOvertime = state.lastOptimized && result.shortageImpactMinutes > 0;
 
         tr.innerHTML = `
           <td>
@@ -999,8 +1024,8 @@
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
           <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
           <td class="${isShortOvertime ? "short-overtime-cell" : ""}"><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
-          <td><input class="cell-input" type="number" min="0" step="10" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
-          <td><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
+          <td><input class="cell-input" type="text" inputmode="numeric" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td class="${isAdjustedOvertime ? "adjusted-overtime-cell" : ""}"><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
           <td><span class="output">${result.requestStart || "-"}</span></td>
           <td><span class="output">${result.requestEnd || "-"}</span></td>
           <td><span class="output">${formatMinutes(result.pmsMinutes)}</span></td>
@@ -1071,7 +1096,7 @@
       renderSummary(week);
     }
 
-    function updateField(index, field, value) {
+    function setFieldValue(index, field, value) {
       const day = state.days[index];
       if (field === "workType") {
         day.workType = value;
@@ -1098,6 +1123,10 @@
       }
       state.lastOptimized = false;
       state.optimizedMinutes = Array(7).fill(null);
+    }
+
+    function updateField(index, field, value) {
+      setFieldValue(index, field, value);
       render();
     }
 
@@ -1121,25 +1150,26 @@
         .map((line) => line.split("\t").map((cell) => cell.trim()));
       if (!rows.length || !rows[0].length) return false;
 
-      const twoColumnTimePaste = rows.some((row) => row.length >= 2)
-        && (startField === "start" || startField === "end");
+      const pasteFields = ["start", "end", "nonWorkMinutes", "outingStart", "outingEnd", "adjustmentMinutes"];
+      const startFieldIndex = pasteFields.indexOf(startField);
+      if (startFieldIndex < 0) return false;
 
       rows.forEach((row, offset) => {
         const day = state.days[startIndex + offset];
         if (!day) return;
-        if (twoColumnTimePaste) {
-          if (row[0]) day.start = normalizeTimeText(row[0]);
-          if (row[1]) day.end = normalizeTimeText(row[1]);
-          if (day.workType === "휴일") day.workType = "출근";
-        } else if (startField && row[0] != null) {
-          const value = row[0].trim();
-          if (startField === "start" || startField === "end" || startField === "outingStart" || startField === "outingEnd") {
-            day[startField] = normalizeTimeText(value);
-          } else if (startField === "nonWorkMinutes" || startField === "adjustmentMinutes") {
-            day[startField] = Math.max(0, Number(value) || 0);
-          } else {
-            day[startField] = value;
+        row.forEach((rawValue, columnOffset) => {
+          const field = pasteFields[startFieldIndex + columnOffset];
+          if (!field) return;
+          const value = rawValue.trim();
+          if (!value) return;
+          if (field === "start" || field === "end" || field === "outingStart" || field === "outingEnd") {
+            day[field] = normalizeTimeText(value);
+          } else if (field === "nonWorkMinutes" || field === "adjustmentMinutes") {
+            day[field] = Math.max(0, Number(value) || 0);
           }
+        });
+        if ((row[0] || row[1]) && day.workType === "휴일" && (startField === "start" || startField === "end")) {
+          day.workType = "출근";
         }
       });
 
@@ -1178,8 +1208,9 @@
     rowsEl.addEventListener("input", (event) => {
       const target = event.target;
       if (!target.dataset.field) return;
+      if (target.tagName === "SELECT") return;
       const index = Number(target.closest("tr").dataset.index);
-      updateField(index, target.dataset.field, target.value);
+      setFieldValue(index, target.dataset.field, target.value);
     });
 
     rowsEl.addEventListener("change", (event) => {
