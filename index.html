@@ -565,7 +565,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 01:55</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 02:05</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -699,6 +699,8 @@
       requestBreakTriggerMinutes: 240,
       requestBreakMinutes: 30,
       weeklyOvertimeLimitMinutes: 720,
+      holidayCountryCode: "KR",
+      holidayApiBase: "https://date.nager.at/api/v3/PublicHolidays",
       weekdays: ["일", "월", "화", "수", "목", "금", "토"],
       workTypes: ["출근", "외출", "출장", "휴가", "휴일", "특근"]
     };
@@ -706,8 +708,13 @@
     const state = {
       days: [],
       optimizedMinutes: Array(7).fill(null),
-      autoOptimizeEnabled: false
+      autoOptimizeEnabled: false,
+      holidayByDate: new Map(),
+      holidayLoadStatus: "idle",
+      holidayRequestId: 0
     };
+
+    const holidayCache = new Map();
 
     const rowsEl = document.querySelector("#rows");
     const weekStartEl = document.querySelector("#weekStart");
@@ -857,6 +864,77 @@
       return !isWeekendIndex(index) && day.workType !== "휴일";
     }
 
+    function holidayNameForDate(dateValue) {
+      return state.holidayByDate.get(dateValue)?.name || "";
+    }
+
+    function weekYears(monday) {
+      return [...new Set(Array.from({ length: 7 }, (_, index) => addDays(monday, index).getFullYear()))];
+    }
+
+    function normalizeHoliday(item) {
+      return {
+        date: item.date,
+        name: item.localName || item.name || "공휴일"
+      };
+    }
+
+    async function fetchPublicHolidays(year) {
+      if (holidayCache.has(year)) return holidayCache.get(year);
+      const promise = fetch(`${CONFIG.holidayApiBase}/${year}/${CONFIG.holidayCountryCode}`)
+        .then((response) => {
+          if (!response.ok) throw new Error(`Holiday API ${response.status}`);
+          return response.json();
+        })
+        .then((items) => items.filter((item) => item.date).map(normalizeHoliday))
+        .catch((error) => {
+          holidayCache.delete(year);
+          throw error;
+        });
+      holidayCache.set(year, promise);
+      return promise;
+    }
+
+    function applyOfficialHolidays() {
+      state.days.forEach((day) => {
+        const holiday = state.holidayByDate.get(day.date);
+        if (!holiday) return;
+        day.workType = "휴일";
+        day.start = "";
+        day.end = "";
+        day.nonWorkMinutes = 0;
+        day.outingStart = "";
+        day.outingEnd = "";
+        day.adjustmentMinutes = 0;
+      });
+      state.optimizedMinutes = Array(7).fill(null);
+    }
+
+    async function loadHolidaysForWeek(monday) {
+      const requestId = state.holidayRequestId + 1;
+      state.holidayRequestId = requestId;
+      state.holidayLoadStatus = "loading";
+      state.holidayByDate = new Map();
+      render();
+
+      try {
+        const holidaysByYear = await Promise.all(weekYears(monday).map(fetchPublicHolidays));
+        if (requestId !== state.holidayRequestId) return;
+        state.holidayByDate = new Map(
+          holidaysByYear
+            .flat()
+            .map((holiday) => [holiday.date, holiday])
+        );
+        applyOfficialHolidays();
+        state.holidayLoadStatus = "loaded";
+      } catch (error) {
+        if (requestId !== state.holidayRequestId) return;
+        state.holidayLoadStatus = "error";
+      }
+
+      render();
+    }
+
     function buildDefaultDay(date, index) {
       return {
         date: localDateValue(date),
@@ -875,7 +953,10 @@
       weekStartEl.value = localDateValue(monday);
       state.days = Array.from({ length: 7 }, (_, index) => buildDefaultDay(addDays(monday, index), index));
       state.optimizedMinutes = Array(7).fill(null);
+      state.holidayByDate = new Map();
+      state.holidayLoadStatus = "idle";
       render();
+      loadHolidaysForWeek(monday);
     }
 
     function calculateDay(day, index, overrideRequestMinutes = null) {
@@ -884,6 +965,8 @@
       const nonWorkSeconds = Math.max(0, Number(day.nonWorkMinutes) || 0) * CONFIG.minute;
       const adjustmentMinutes = Math.max(0, Number(day.adjustmentMinutes) || 0);
       const note = [];
+      const holidayName = holidayNameForDate(day.date);
+      if (holidayName) note.push(`공휴일: ${holidayName}`);
       const base = {
         index,
         targetDay: isTargetDay(day, index),
@@ -1172,6 +1255,18 @@
       }
       if (state.autoOptimizeEnabled) {
         messages.push("잔근 자동 최적화가 켜져 있어 입력 변경 시 결과를 다시 계산합니다.");
+      }
+      if (state.holidayLoadStatus === "loading") {
+        messages.push("공휴일 정보를 불러오는 중입니다.");
+      } else if (state.holidayLoadStatus === "loaded") {
+        const holidayCount = state.days.filter((day) => holidayNameForDate(day.date)).length;
+        messages.push(
+          holidayCount > 0
+            ? `공휴일 ${holidayCount}일이 휴일로 자동 반영되었습니다.`
+            : "이 주에는 자동 반영할 공휴일이 없습니다."
+        );
+      } else if (state.holidayLoadStatus === "error") {
+        messages.push("공휴일 정보를 불러오지 못했습니다. 네트워크 상태를 확인해 주세요.");
       }
       if (!overtimeWithinLimit) {
         messages.push("인정 잔근 합계가 주 12시간 한도를 초과합니다.");
