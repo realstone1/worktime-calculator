@@ -356,6 +356,11 @@
       padding: 4px 5px;
     }
 
+    .minute-input {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
     .output {
       display: block;
       text-align: right;
@@ -397,7 +402,7 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 10px;
       margin-bottom: 10px;
     }
@@ -473,10 +478,6 @@
         justify-content: flex-start;
       }
 
-      .summary-grid {
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
-      }
-
       .summary-bottom {
         align-items: flex-start;
         flex-direction: column;
@@ -490,7 +491,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 00:24</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 01:25</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -504,7 +505,7 @@
         </div>
         <button id="sampleButton" type="button">예시 입력</button>
         <button id="clearButton" type="button">초기화</button>
-        <button id="optimizeButton" class="primary" type="button">잔근 자동 최적화</button>
+        <button id="optimizeButton" type="button" aria-pressed="false">잔근 자동 최적화 OFF</button>
       </div>
     </header>
 
@@ -521,13 +522,13 @@
           <col style="width: 80px">
           <col style="width: 80px">
           <col style="width: 66px">
+          <col style="width: 66px">
           <col style="width: 78px">
           <col style="width: 76px">
           <col style="width: 76px">
           <col style="width: 76px">
           <col style="width: 76px">
           <col style="width: 76px">
-          <col style="width: 66px">
           <col style="width: 160px">
         </colgroup>
         <thead>
@@ -542,13 +543,13 @@
             <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">실제<br>잔근 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이나 수동 시뮬레이션을 위해 실제 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분) 차감을 반영한 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 공수 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 공수 조건에 따른 잔근 조정을 반영합니다. 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">잔근 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청 시간을 기준으로 계산된 잔근 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
             <th><span class="th-title">잔근 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
             <th><span class="th-title">PMS<br>공수 <span class="th-help" tabindex="0" data-help="PMS에 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="최대 신청 가능 잔근에서 주 12시간 한도와 PMS 공수 조건을 맞추기 위해 줄인 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
           </tr>
         </thead>
@@ -559,13 +560,13 @@
             <td><span id="tableWorkTotal" class="output">0:00</span></td>
             <td><span id="tableActualOvertimeTotal" class="output">0분</span></td>
             <td></td>
+            <td><span id="tableShortageTotal" class="output">0분</span></td>
             <td><span id="tableOvertimeTotal" class="output">0분</span></td>
             <td></td>
             <td></td>
             <td><span id="tablePmsTotal" class="output">0분</span></td>
             <td><span id="tablePmsOvertimeTotal" class="output">0분</span></td>
             <td><span id="tableAttendanceTotal" class="output">0분</span></td>
-            <td><span id="tableShortageTotal" class="output">0분</span></td>
             <td><span id="tableLimitNote" class="muted">잔근 한도 12시간</span></td>
           </tr>
         </tfoot>
@@ -580,8 +581,12 @@
         <div id="targetMetric" class="metric-value">0:00</div>
       </div>
       <div class="metric">
-        <div class="metric-label">전체 업무시간</div>
+        <div class="metric-label">주간 근무시간</div>
         <div id="workMetric" class="metric-value">0:00</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">주간 잔근 합계</div>
+        <div id="overtimeMetric" class="metric-value">0분</div>
       </div>
       <div class="metric">
         <div class="metric-label">PMS 공수 합계</div>
@@ -591,20 +596,14 @@
         <div class="metric-label">PMS 공수 부족</div>
         <div id="shortageMetric" class="metric-value">0분</div>
       </div>
-      <div class="metric">
-        <div class="metric-label">잔근 합계</div>
-        <div id="overtimeMetric" class="metric-value">0분</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">표준 근무 시간 충족</div>
-        <div id="fortyMetric" class="metric-value">미충족</div>
-      </div>
     </div>
     <div class="summary-bottom">
       <div id="message" class="message"></div>
       <div class="legend">
         <span class="pill">PMS 부족 판정 = PMS 공수 합계</span>
         <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
+        <span class="pill">720분 초과분은 작은 잔근일부터 우선 차감</span>
+        <span class="pill">큰 잔근일은 최대한 보존</span>
         <span class="pill">특근 계산은 보류</span>
         <span class="pill">연한 빨강: 체류시간 8시간 미만</span>
         <span class="pill">연한 주황: 잔근 신청 1시간 미만</span>
@@ -625,7 +624,6 @@
       minOvertimeRequestMinutes: 60,
       requestBreakTriggerMinutes: 240,
       requestBreakMinutes: 30,
-      weeklyWorkThresholdMinutes: 2400,
       weeklyOvertimeLimitMinutes: 720,
       weekdays: ["일", "월", "화", "수", "목", "금", "토"],
       workTypes: ["출근", "외출", "출장", "휴가", "휴일", "특근"]
@@ -634,17 +632,17 @@
     const state = {
       days: [],
       optimizedMinutes: Array(7).fill(null),
-      lastOptimized: false
+      autoOptimizeEnabled: false
     };
 
     const rowsEl = document.querySelector("#rows");
     const weekStartEl = document.querySelector("#weekStart");
+    const optimizeButton = document.querySelector("#optimizeButton");
     const targetMetric = document.querySelector("#targetMetric");
     const workMetric = document.querySelector("#workMetric");
     const pmsMetric = document.querySelector("#pmsMetric");
     const shortageMetric = document.querySelector("#shortageMetric");
     const overtimeMetric = document.querySelector("#overtimeMetric");
-    const fortyMetric = document.querySelector("#fortyMetric");
     const messageEl = document.querySelector("#message");
     const tableWorkTotal = document.querySelector("#tableWorkTotal");
     const tableActualOvertimeTotal = document.querySelector("#tableActualOvertimeTotal");
@@ -721,6 +719,14 @@
       return `${Math.round(minutes)}분`;
     }
 
+    function parseMinuteText(value) {
+      return Math.max(0, Number(String(value || "").replace(/[^\d]/g, "")) || 0);
+    }
+
+    function isMinuteInputField(field) {
+      return field === "nonWorkMinutes" || field === "adjustmentMinutes";
+    }
+
     function roundPmsMinutes(seconds) {
       if (!Number.isFinite(seconds) || seconds <= 0) return 0;
       const wholeMinutes = Math.floor(seconds / CONFIG.minute);
@@ -794,7 +800,6 @@
       weekStartEl.value = localDateValue(monday);
       state.days = Array.from({ length: 7 }, (_, index) => buildDefaultDay(addDays(monday, index), index));
       state.optimizedMinutes = Array(7).fill(null);
-      state.lastOptimized = false;
       render();
     }
 
@@ -905,6 +910,7 @@
       const workMinutes = days.reduce((sum, result) => sum + roundPmsMinutes(result.workSeconds), 0);
       const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
       const overtimeMinutes = days.reduce((sum, result) => sum + result.overtimePmsMinutes, 0);
+      const standardWorkMinutes = Math.max(0, workMinutes - overtimeMinutes);
       const actualOvertimeMinutes = roundPmsMinutes(days.reduce((sum, result) => sum + result.actualOvertimeSeconds, 0));
       const pmsWorkMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
       const attendanceMinutes = days.reduce((sum, result) => sum + result.attendanceMinutes, 0);
@@ -914,6 +920,7 @@
         days,
         targetMinutes,
         workMinutes,
+        standardWorkMinutes,
         pmsAppliedMinutes,
         pmsWorkMinutes,
         overtimeMinutes,
@@ -925,29 +932,50 @@
     }
 
     function reducePlanToWeeklyOvertimeLimit(plan) {
-      const limitedPlan = [...plan];
-      const step = CONFIG.overtimeStepMinutes;
+      const limit = CONFIG.weeklyOvertimeLimitMinutes;
+      const total = plan.reduce((sum, minutes) => sum + minutes, 0);
+      if (total <= limit) return [...plan];
 
-      while (limitedPlan.reduce((sum, minutes) => sum + minutes, 0) > CONFIG.weeklyOvertimeLimitMinutes) {
-        let targetIndex = -1;
-        let targetMinutes = 0;
-        for (let index = 0; index < limitedPlan.length; index += 1) {
-          if (limitedPlan[index] > targetMinutes) {
-            targetMinutes = limitedPlan[index];
-            targetIndex = index;
-          }
+      const weights = plan.map((minutes) => minutes);
+      let states = [{ total: 0, score: 0, values: [] }];
+
+      plan.forEach((maxMinutes, index) => {
+        const options = [0];
+        for (
+          let minutes = CONFIG.minOvertimeRequestMinutes;
+          minutes <= maxMinutes;
+          minutes += CONFIG.overtimeStepMinutes
+        ) {
+          options.push(minutes);
         }
-        if (targetIndex < 0 || targetMinutes <= 0) break;
 
-        limitedPlan[targetIndex] = targetMinutes === CONFIG.minOvertimeRequestMinutes
-          ? 0
-          : Math.max(CONFIG.minOvertimeRequestMinutes, targetMinutes - step);
-      }
+        const nextByTotal = new Map();
+        states.forEach((state) => {
+          options.forEach((minutes) => {
+            const nextTotal = state.total + minutes;
+            if (nextTotal > limit) return;
+            const nextScore = state.score + minutes * weights[index];
+            const existing = nextByTotal.get(nextTotal);
+            if (!existing || nextScore > existing.score) {
+              nextByTotal.set(nextTotal, {
+                total: nextTotal,
+                score: nextScore,
+                values: [...state.values, minutes]
+              });
+            }
+          });
+        });
+        states = [...nextByTotal.values()];
+      });
 
-      return limitedPlan;
+      return states.reduce((best, state) => {
+        if (!best) return state;
+        if (state.total !== best.total) return state.total > best.total ? state : best;
+        return state.score > best.score ? state : best;
+      }, null).values;
     }
 
-    function optimizePlan() {
+    function buildOptimizedPlan() {
       const maxWeek = calculateWeek();
       const plan = reducePlanToWeeklyOvertimeLimit(maxWeek.days.map((day) => day.maxRequestMinutes));
       let week = calculateWeek(plan);
@@ -977,8 +1005,12 @@
         week = best.trialWeek;
       }
 
-      state.optimizedMinutes = plan;
-      state.lastOptimized = true;
+      return plan;
+    }
+
+    function toggleAutoOptimize() {
+      state.autoOptimizeEnabled = !state.autoOptimizeEnabled;
+      state.optimizedMinutes = Array(7).fill(null);
       render();
     }
 
@@ -1003,7 +1035,7 @@
         const needsOuting = day.workType === "외출";
         const isLowWork = needsClock && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour;
         const isShortOvertime = result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour;
-        const isAdjustedOvertime = state.lastOptimized && result.shortageImpactMinutes > 0;
+        const isAdjustedOvertime = state.autoOptimizeEnabled && result.shortageImpactMinutes > 0;
 
         tr.innerHTML = `
           <td>
@@ -1019,19 +1051,19 @@
           </td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="start" value="${day.start}" ${needsClock ? "" : "disabled"}></td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="end" value="${day.end}" ${needsClock ? "" : "disabled"}></td>
-          <td><input class="cell-input" type="text" inputmode="numeric" placeholder="분" data-field="nonWorkMinutes" value="${day.nonWorkMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><input class="cell-input minute-input" type="text" inputmode="numeric" data-field="nonWorkMinutes" value="${day.nonWorkMinutes}" ${needsClock ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
           <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
           <td class="${isShortOvertime ? "short-overtime-cell" : ""}"><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
-          <td><input class="cell-input" type="text" inputmode="numeric" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><input class="cell-input minute-input" type="text" inputmode="numeric" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><span class="output ${result.shortageImpactMinutes ? "warn" : "muted"}">${formatMinutes(result.shortageImpactMinutes)}</span></td>
           <td class="${isAdjustedOvertime ? "adjusted-overtime-cell" : ""}"><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
           <td><span class="output">${result.requestStart || "-"}</span></td>
           <td><span class="output">${result.requestEnd || "-"}</span></td>
           <td><span class="output">${formatMinutes(result.pmsMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.overtimePmsMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.attendanceMinutes)}</span></td>
-          <td><span class="output ${result.shortageImpactMinutes ? "warn" : "muted"}">${formatMinutes(result.shortageImpactMinutes)}</span></td>
           <td><span class="muted">${result.note.join(", ")}</span></td>
         `;
         rowsEl.appendChild(tr);
@@ -1039,18 +1071,16 @@
     }
 
     function renderSummary(week) {
-      const workOver40 = week.workMinutes > CONFIG.weeklyWorkThresholdMinutes;
+      const standardWorkMet = week.standardWorkMinutes >= week.targetMinutes;
       const overtimeWithinLimit = week.overtimeMinutes <= CONFIG.weeklyOvertimeLimitMinutes;
       targetMetric.textContent = formatHoursMinutes(week.targetMinutes);
-      workMetric.textContent = formatHoursMinutes(week.workMinutes);
-      workMetric.className = `metric-value ${workOver40 ? "good" : "bad"}`;
+      workMetric.textContent = formatHoursMinutes(week.standardWorkMinutes);
+      workMetric.className = `metric-value ${standardWorkMet ? "good" : "bad"}`;
       pmsMetric.textContent = formatMinutes(week.pmsAppliedMinutes);
       shortageMetric.textContent = formatMinutes(week.shortageMinutes);
       shortageMetric.className = `metric-value ${week.shortageMinutes === 0 ? "good" : "bad"}`;
       overtimeMetric.textContent = formatMinutes(week.overtimeMinutes);
       overtimeMetric.className = `metric-value ${overtimeWithinLimit ? "" : "bad"}`;
-      fortyMetric.textContent = workOver40 ? "충족" : "미충족";
-      fortyMetric.className = `metric-value ${workOver40 ? "good" : "bad"}`;
 
       const messages = [];
       if (week.shortageMinutes === 0) {
@@ -1058,13 +1088,13 @@
       } else {
         messages.push(`PMS 공수가 ${week.shortageMinutes}분 부족합니다.`);
       }
-      if (workOver40) {
-        messages.push("주간 전체 업무시간이 40시간을 초과합니다.");
+      if (standardWorkMet) {
+        messages.push("주간 근무시간이 주간 표준 근무 시간 이상입니다.");
       } else {
-        messages.push("주간 전체 업무시간이 40시간을 초과하지 않습니다.");
+        messages.push("주간 근무시간이 주간 표준 근무 시간보다 부족합니다.");
       }
-      if (state.lastOptimized) {
-        messages.push("자동 최적화 결과가 테이블에 반영되어 있습니다.");
+      if (state.autoOptimizeEnabled) {
+        messages.push("잔근 자동 최적화가 켜져 있어 입력 변경 시 결과를 다시 계산합니다.");
       }
       if (!overtimeWithinLimit) {
         messages.push("인정 잔근 합계가 주 12시간 한도를 초과합니다.");
@@ -1089,11 +1119,21 @@
     }
 
     function render() {
-      const requestPlan = state.lastOptimized ? state.optimizedMinutes : null;
+      if (state.autoOptimizeEnabled) {
+        state.optimizedMinutes = buildOptimizedPlan();
+      }
+      renderOptimizeButton();
+      const requestPlan = state.autoOptimizeEnabled ? state.optimizedMinutes : null;
       const week = calculateWeek(requestPlan);
       renderRows(week.days);
       renderTableTotals(week);
       renderSummary(week);
+    }
+
+    function renderOptimizeButton() {
+      optimizeButton.textContent = `잔근 자동 최적화 ${state.autoOptimizeEnabled ? "ON" : "OFF"}`;
+      optimizeButton.classList.toggle("primary", state.autoOptimizeEnabled);
+      optimizeButton.setAttribute("aria-pressed", String(state.autoOptimizeEnabled));
     }
 
     function setFieldValue(index, field, value) {
@@ -1116,12 +1156,11 @@
           day.start = "08:00";
           day.end = "18:00";
         }
-      } else if (field === "nonWorkMinutes" || field === "adjustmentMinutes") {
-        day[field] = Math.max(0, Number(value) || 0);
+      } else if (isMinuteInputField(field)) {
+        day[field] = parseMinuteText(value);
       } else {
         day[field] = value;
       }
-      state.lastOptimized = false;
       state.optimizedMinutes = Array(7).fill(null);
     }
 
@@ -1164,8 +1203,8 @@
           if (!value) return;
           if (field === "start" || field === "end" || field === "outingStart" || field === "outingEnd") {
             day[field] = normalizeTimeText(value);
-          } else if (field === "nonWorkMinutes" || field === "adjustmentMinutes") {
-            day[field] = Math.max(0, Number(value) || 0);
+          } else if (isMinuteInputField(field)) {
+            day[field] = parseMinuteText(value);
           }
         });
         if ((row[0] || row[1]) && day.workType === "휴일" && (startField === "start" || startField === "end")) {
@@ -1173,7 +1212,6 @@
         }
       });
 
-      state.lastOptimized = false;
       state.optimizedMinutes = Array(7).fill(null);
       render();
       return true;
@@ -1200,7 +1238,6 @@
         outingEnd: item[5],
         adjustmentMinutes: item[6]
       }));
-      state.lastOptimized = false;
       state.optimizedMinutes = Array(7).fill(null);
       render();
     }
@@ -1236,7 +1273,7 @@
       setWeek(parseDateValue(weekStartEl.value));
     });
 
-    document.querySelector("#optimizeButton").addEventListener("click", optimizePlan);
+    optimizeButton.addEventListener("click", toggleAutoOptimize);
     document.querySelector("#sampleButton").addEventListener("click", applySample);
     document.querySelector("#clearButton").addEventListener("click", () => setWeek(parseDateValue(weekStartEl.value)));
 
