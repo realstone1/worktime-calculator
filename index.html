@@ -565,7 +565,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 02:05</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 02:14</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -861,7 +861,7 @@
     }
 
     function isTargetDay(day, index) {
-      return !isWeekendIndex(index) && day.workType !== "휴일";
+      return !isWeekendIndex(index) && day.workType !== "휴일" && !holidayNameForDate(day.date);
     }
 
     function holidayNameForDate(dateValue) {
@@ -967,6 +967,7 @@
       const note = [];
       const holidayName = holidayNameForDate(day.date);
       if (holidayName) note.push(`공휴일: ${holidayName}`);
+      const isOfficialHolidayWork = Boolean(holidayName) && (day.workType === "출근" || day.workType === "외출");
       const base = {
         index,
         targetDay: isTargetDay(day, index),
@@ -1013,10 +1014,12 @@
       const staySeconds = Math.max(0, endSeconds - startSeconds - nonWorkSeconds);
       const breakSeconds = breakSecondsForStay(staySeconds);
       const workSeconds = Math.max(0, staySeconds - breakSeconds);
-      const actualOvertimeSeconds = Math.max(
-        0,
-        endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds
-      );
+      const actualOvertimeSeconds = isOfficialHolidayWork
+        ? workSeconds
+        : Math.max(
+          0,
+          endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds
+        );
       const maxRequestMinutes = requestableFromActual(actualOvertimeSeconds, adjustmentMinutes);
       const requestMinutes = overrideRequestMinutes == null
         ? maxRequestMinutes
@@ -1035,7 +1038,7 @@
       }
 
       const roundedWorkMinutes = roundPmsMinutes(workSeconds);
-      const pmsMinutes = Math.max(0, roundedWorkMinutes - requestMinutes);
+      const pmsMinutes = isOfficialHolidayWork ? 0 : Math.max(0, roundedWorkMinutes - requestMinutes);
       const requestEndSeconds = requestMinutes > 0 ? floorSecondsToStep(endSeconds) : null;
       const requestApplicationMinutes = requestApplicationDurationMinutes(
         requestMinutes,
@@ -1058,6 +1061,7 @@
       base.overtimePmsMinutes = requestMinutes;
       base.attendanceMinutes = outingAttendanceMinutes;
       base.shortageImpactMinutes = maxRequestMinutes - requestMinutes;
+      if (isOfficialHolidayWork) note.push("공휴일 근무는 잔근으로 계산");
       if (outingAttendanceMinutes > 0) note.push(`외출 근태 ${outingAttendanceMinutes}분`);
       return base;
     }
