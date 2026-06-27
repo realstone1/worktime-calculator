@@ -304,14 +304,8 @@
       background: #fff8ed;
     }
 
-    tr.low-work td {
+    td.low-work-cell {
       background: #fff1f1;
-      color: var(--red);
-      font-weight: 750;
-    }
-
-    tr.low-work input,
-    tr.low-work select {
       color: var(--red);
       font-weight: 750;
     }
@@ -928,9 +922,6 @@
       if (type === "특근") return "pending";
       if (type === "휴일") return "holiday";
       if (isWeekendIndex(index)) classes.push("weekend");
-      if ((type === "출근" || type === "외출") && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour) {
-        classes.push("low-work");
-      }
       if (result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour) {
         classes.push("short-overtime");
       }
@@ -948,6 +939,7 @@
 
         const needsClock = day.workType === "출근" || day.workType === "외출";
         const needsOuting = day.workType === "외출";
+        const isLowWork = needsClock && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour;
 
         tr.innerHTML = `
           <td>
@@ -966,7 +958,7 @@
           <td><input class="cell-input" type="text" inputmode="numeric" placeholder="분" data-field="nonWorkMinutes" value="${day.nonWorkMinutes}" ${needsClock ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
-          <td><span class="output">${formatClock(result.workSeconds)}</span></td>
+          <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
           <td><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
           <td><input class="cell-input" type="number" min="0" step="10" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
           <td><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
