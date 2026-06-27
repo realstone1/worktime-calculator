@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PMS Work Time & Overtime Planner</title>
+  <style>
+    :root {
+      --bg: #f5f7f9;
+      --panel: #ffffff;
+      --line: #d8dee6;
+      --line-strong: #aeb8c5;
+      --text: #1f2933;
+      --muted: #687789;
+      --head: #eef3f8;
+      --input: #fbfcfe;
+      --accent: #0f766e;
+      --accent-strong: #0b5e58;
+      --blue: #2563eb;
+      --red: #c2410c;
+      --green: #15803d;
+      --amber: #b45309;
+      --shadow: 0 8px 26px rgba(31, 41, 51, 0.09);
+      font-family: "Segoe UI", "Malgun Gothic", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 18px 18px 178px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .title-group {
+      min-width: 260px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .subtitle span {
+      display: block;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    input,
+    select {
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--input);
+      color: var(--text);
+      padding: 5px 8px;
+      min-width: 0;
+    }
+
+    input[type="number"] {
+      text-align: right;
+    }
+
+    input[readonly] {
+      background: #f1f4f7;
+      color: #4b5a6a;
+    }
+
+    input:disabled,
+    select:disabled {
+      border-color: #a9b2bd;
+      background: #cfd5dd;
+      color: #5f6b78;
+      opacity: 1;
+    }
+
+    .outing-time:not(:disabled) {
+      border-color: #8aa4c8;
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+    }
+
+    button {
+      height: 34px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      padding: 0 12px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+
+    button:hover {
+      border-color: #7b8795;
+      background: #f8fafc;
+    }
+
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .primary:hover {
+      border-color: var(--accent-strong);
+      background: var(--accent-strong);
+    }
+
+    .table-shell {
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1320px;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 5px;
+      vertical-align: middle;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: var(--head);
+      color: #324253;
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 750;
+      text-align: center;
+    }
+
+    th:hover,
+    th:focus-within {
+      z-index: 50;
+    }
+
+    .th-title,
+    .th-unit {
+      display: block;
+    }
+
+    .th-help {
+      position: relative;
+      z-index: 51;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      margin-left: 3px;
+      border: 1px solid #9aa8b8;
+      border-radius: 50%;
+      background: #fff;
+      color: #526173;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+      cursor: help;
+    }
+
+    .th-help::after {
+      content: attr(data-help);
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 8px);
+      z-index: 100;
+      width: max-content;
+      max-width: 260px;
+      padding: 8px 9px;
+      border: 1px solid #7b8795;
+      border-radius: 6px;
+      background: #1f2933;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      text-align: left;
+      white-space: normal;
+      box-shadow: 0 8px 18px rgba(31, 41, 51, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -4px);
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+
+    .th-help::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 3px);
+      z-index: 101;
+      border: 5px solid transparent;
+      border-bottom-color: #1f2933;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%);
+      transition: opacity 120ms ease;
+    }
+
+    .th-help:hover::after,
+    .th-help:focus::after,
+    .th-help:hover::before,
+    .th-help:focus::before {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .th-help:hover::before,
+    .th-help:focus::before {
+      transform: translateX(-50%);
+    }
+
+    .th-unit {
+      margin-top: 2px;
+      color: #6b7a8b;
+      font-size: 10px;
+      font-weight: 650;
+      line-height: 1.1;
+    }
+
+    tfoot td {
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+      border-top: 2px solid var(--line-strong);
+      background: #eaf4f2;
+      font-weight: 800;
+    }
+
+    td {
+      background: #fff;
+      height: 44px;
+    }
+
+    tr.weekend td {
+      background: #fbf7f2;
+    }
+
+    tr.holiday td {
+      background: #f7f8fa;
+    }
+
+    tr.pending td {
+      background: #fff8ed;
+    }
+
+    tr.low-work td {
+      background: #fff1f1;
+    }
+
+    tr.short-overtime td {
+      background: #fff4e5;
+    }
+
+    .date-cell {
+      display: grid;
+      gap: 2px;
+      line-height: 1.25;
+    }
+
+    .date-main {
+      font-weight: 750;
+    }
+
+    .date-sub {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .cell-input,
+    .cell-select {
+      width: 100%;
+      height: 28px;
+      padding: 4px 5px;
+    }
+
+    .output {
+      display: block;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .good {
+      color: var(--green);
+      font-weight: 750;
+    }
+
+    .warn {
+      color: var(--amber);
+      font-weight: 750;
+    }
+
+    .bad {
+      color: var(--red);
+      font-weight: 750;
+    }
+
+    .summary {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      border-top: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 -10px 24px rgba(31, 41, 51, 0.12);
+      padding: 12px 18px 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #fff;
+      min-height: 64px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      margin-bottom: 5px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: 780;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .message {
+      color: #344658;
+      line-height: 1.45;
+      min-height: 20px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .app {
+        padding: 12px 10px 260px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .toolbar {
+        justify-content: flex-start;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .summary-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title-group">
+        <h1>PMS Work Time & Overtime Planner</h1>
+        <div class="subtitle">
+          <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
+          <span>HARU 주간 근무 시간 페이지에서 인정 출근시간, 인정 퇴근시간, 비업무시간을 복사/붙여넣기 합니다.</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="field">
+          <label for="weekStart">주 시작일</label>
+          <input id="weekStart" type="date">
+        </div>
+        <button id="sampleButton" type="button">예시 입력</button>
+        <button id="clearButton" type="button">초기화</button>
+        <button id="optimizeButton" class="primary" type="button">잔근 자동 최적화</button>
+      </div>
+    </header>
+
+    <section class="table-shell" aria-label="주간 근무시간 계산표">
+      <table>
+        <colgroup>
+          <col style="width: 88px">
+          <col style="width: 78px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 66px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 80px">
+          <col style="width: 66px">
+          <col style="width: 80px">
+          <col style="width: 78px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 76px">
+          <col style="width: 66px">
+          <col style="width: 160px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th><span class="th-title">일자 <span class="th-help" tabindex="0" data-help="주 시작일을 기준으로 자동 표시되는 날짜입니다.">?</span></span><span class="th-unit">[월/일]</span></th>
+            <th><span class="th-title">근태 <span class="th-help" tabindex="0" data-help="출근, 외출, 출장, 휴가, 휴일, 특근 중 하나를 선택합니다.">?</span></span><span class="th-unit">[구분]</span></th>
+            <th><span class="th-title">인정<br>출근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 출근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">인정<br>퇴근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 퇴근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">비업무<br>시간 <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">외출<br>시작시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 시작시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">외출<br>종료시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 종료시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 연장근무 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">실제<br>연장근무 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
+            <th><span class="th-title">조정 <span class="th-help" tabindex="0" data-help="실제 연장근무 시간에서 제외할 시간을 분 단위로 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">추천 잔근<br>신청 시간 <span class="th-help" tabindex="0" data-help="10분 단위, 최소 1시간, 4시간 이상 신청 시 30분 차감 규칙을 반영한 추천 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">연장 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="추천 잔근 신청 시간을 기준으로 계산된 연장근무 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
+            <th><span class="th-title">연장 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 연장근무 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
+            <th><span class="th-title">PMS<br>공수 <span class="th-help" tabindex="0" data-help="PMS에 공수로 입력 가능한 분입니다. 체류시간에서 추천 잔근 신청 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 추천 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">부족<br>영향 <span class="th-help" tabindex="0" data-help="최대 신청 가능 잔근에서 최적화를 위해 줄인 시간입니다. 줄인 만큼 PMS 공수 부족이 완화됩니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7">주간 합계</td>
+            <td><span id="tableWorkTotal" class="output">0:00</span></td>
+            <td><span id="tableActualOvertimeTotal" class="output">0분</span></td>
+            <td></td>
+            <td><span id="tableOvertimeTotal" class="output">0분</span></td>
+            <td></td>
+            <td></td>
+            <td><span id="tablePmsTotal" class="output">0분</span></td>
+            <td><span id="tablePmsOvertimeTotal" class="output">0분</span></td>
+            <td><span id="tableAttendanceTotal" class="output">0분</span></td>
+            <td><span id="tableShortageTotal" class="output">0분</span></td>
+            <td><span id="tableLimitNote" class="muted">잔근 한도 12시간</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+  </main>
+
+  <section class="summary" aria-label="주간 요약">
+    <div class="summary-grid">
+      <div class="metric">
+        <div class="metric-label">주간 표준 근무 시간</div>
+        <div id="targetMetric" class="metric-value">0:00</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">전체 업무시간</div>
+        <div id="workMetric" class="metric-value">0:00</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">PMS 공수 합계</div>
+        <div id="pmsMetric" class="metric-value">0분</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">PMS 공수 부족</div>
+        <div id="shortageMetric" class="metric-value">0분</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">잔근 합계</div>
+        <div id="overtimeMetric" class="metric-value">0분</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">표준 근무 시간 충족</div>
+        <div id="fortyMetric" class="metric-value">미충족</div>
+      </div>
+    </div>
+    <div class="summary-bottom">
+      <div id="message" class="message"></div>
+      <div class="legend">
+        <span class="pill">PMS 부족 판정 = PMS 공수 합계</span>
+        <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
+        <span class="pill">특근 계산은 보류</span>
+        <span class="pill">연한 빨강: 체류시간 8시간 이하</span>
+        <span class="pill">연한 주황: 연장 신청 1시간 미만</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    "use strict";
+
+    const CONFIG = {
+      dayMs: 86400000,
+      minute: 60,
+      hour: 3600,
+      regularMinutes: 480,
+      overtimeBaseHours: 9,
+      overtimeStepMinutes: 10,
+      minOvertimeRequestMinutes: 60,
+      requestBreakTriggerMinutes: 240,
+      requestBreakMinutes: 30,
+      weeklyWorkThresholdMinutes: 2400,
+      weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+      workTypes: ["출근", "외출", "출장", "휴가", "휴일", "특근"]
+    };
+
+    const state = {
+      days: [],
+      optimizedMinutes: Array(7).fill(null),
+      lastOptimized: false
+    };
+
+    const rowsEl = document.querySelector("#rows");
+    const weekStartEl = document.querySelector("#weekStart");
+    const targetMetric = document.querySelector("#targetMetric");
+    const workMetric = document.querySelector("#workMetric");
+    const pmsMetric = document.querySelector("#pmsMetric");
+    const shortageMetric = document.querySelector("#shortageMetric");
+    const overtimeMetric = document.querySelector("#overtimeMetric");
+    const fortyMetric = document.querySelector("#fortyMetric");
+    const messageEl = document.querySelector("#message");
+    const tableWorkTotal = document.querySelector("#tableWorkTotal");
+    const tableActualOvertimeTotal = document.querySelector("#tableActualOvertimeTotal");
+    const tableOvertimeTotal = document.querySelector("#tableOvertimeTotal");
+    const tablePmsTotal = document.querySelector("#tablePmsTotal");
+    const tablePmsOvertimeTotal = document.querySelector("#tablePmsOvertimeTotal");
+    const tableAttendanceTotal = document.querySelector("#tableAttendanceTotal");
+    const tableShortageTotal = document.querySelector("#tableShortageTotal");
+    const tableLimitNote = document.querySelector("#tableLimitNote");
+
+    function pad2(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function localDateValue(date) {
+      return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+    }
+
+    function parseDateValue(value) {
+      const [year, month, day] = value.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    function mondayOf(date) {
+      const result = new Date(date);
+      const day = result.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      result.setDate(result.getDate() + diff);
+      result.setHours(0, 0, 0, 0);
+      return result;
+    }
+
+    function addDays(date, days) {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+
+    function parseTimeToSeconds(value) {
+      if (!value) return null;
+      const parts = value.split(":").map(Number);
+      if (parts.length < 2 || parts.some(Number.isNaN)) return null;
+      const [hours, minutes, seconds = 0] = parts;
+      return hours * CONFIG.hour + minutes * CONFIG.minute + seconds;
+    }
+
+    function secondsToTimeInput(seconds) {
+      if (seconds == null || !Number.isFinite(seconds)) return "";
+      const normalized = ((Math.round(seconds) % 86400) + 86400) % 86400;
+      const hours = Math.floor(normalized / CONFIG.hour);
+      const minutes = Math.floor((normalized % CONFIG.hour) / CONFIG.minute);
+      return `${pad2(hours)}:${pad2(minutes)}`;
+    }
+
+    function formatClock(seconds) {
+      if (seconds == null || !Number.isFinite(seconds)) return "-";
+      const sign = seconds < 0 ? "-" : "";
+      const absolute = Math.abs(Math.round(seconds));
+      const hours = Math.floor(absolute / CONFIG.hour);
+      const minutes = Math.floor((absolute % CONFIG.hour) / CONFIG.minute);
+      const remain = absolute % CONFIG.minute;
+      return `${sign}${pad2(hours)}:${pad2(minutes)}:${pad2(remain)}`;
+    }
+
+    function formatHoursMinutes(minutes) {
+      const sign = minutes < 0 ? "-" : "";
+      const absolute = Math.abs(Math.round(minutes));
+      const hours = Math.floor(absolute / 60);
+      const mins = absolute % 60;
+      return `${sign}${hours}:${pad2(mins)}`;
+    }
+
+    function formatMinutes(minutes) {
+      return `${Math.round(minutes)}분`;
+    }
+
+    function roundPmsMinutes(seconds) {
+      if (!Number.isFinite(seconds) || seconds <= 0) return 0;
+      const wholeMinutes = Math.floor(seconds / CONFIG.minute);
+      const remainingSeconds = Math.round(seconds - wholeMinutes * CONFIG.minute);
+      return wholeMinutes + (remainingSeconds >= 31 ? 1 : 0);
+    }
+
+    function breakSecondsForStay(staySeconds) {
+      if (!Number.isFinite(staySeconds) || staySeconds < 4 * CONFIG.hour) return 0;
+      if (staySeconds < 9 * CONFIG.hour) return 30 * CONFIG.minute;
+      if (staySeconds < 13 * CONFIG.hour) return 60 * CONFIG.minute;
+      return 90 * CONFIG.minute;
+    }
+
+    function floorToStepMinutes(minutes, step = CONFIG.overtimeStepMinutes) {
+      return Math.max(0, Math.floor(minutes / step) * step);
+    }
+
+    function floorSecondsToStep(seconds, stepMinutes = CONFIG.overtimeStepMinutes) {
+      const stepSeconds = stepMinutes * CONFIG.minute;
+      return Math.floor(seconds / stepSeconds) * stepSeconds;
+    }
+
+    function requestableFromActual(actualOvertimeSeconds, adjustmentMinutes) {
+      const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
+      const base = floorToStepMinutes(adjustedMinutes);
+      if (base < CONFIG.minOvertimeRequestMinutes) return 0;
+      if (base >= CONFIG.requestBreakTriggerMinutes + CONFIG.requestBreakMinutes) {
+        return base - CONFIG.requestBreakMinutes;
+      }
+      if (base >= CONFIG.requestBreakTriggerMinutes) return CONFIG.requestBreakTriggerMinutes - 10;
+      return base;
+    }
+
+    function isWeekendIndex(index) {
+      return index >= 5;
+    }
+
+    function isTargetDay(day, index) {
+      return !isWeekendIndex(index) && day.workType !== "휴일";
+    }
+
+    function buildDefaultDay(date, index) {
+      return {
+        date: localDateValue(date),
+        workType: isWeekendIndex(index) ? "휴일" : "출근",
+        start: isWeekendIndex(index) ? "" : "08:00",
+        end: isWeekendIndex(index) ? "" : "18:00",
+        nonWorkMinutes: 0,
+        outingStart: "",
+        outingEnd: "",
+        adjustmentMinutes: 0
+      };
+    }
+
+    function setWeek(date) {
+      const monday = mondayOf(date);
+      weekStartEl.value = localDateValue(monday);
+      state.days = Array.from({ length: 7 }, (_, index) => buildDefaultDay(addDays(monday, index), index));
+      state.optimizedMinutes = Array(7).fill(null);
+      state.lastOptimized = false;
+      render();
+    }
+
+    function calculateDay(day, index, overrideRequestMinutes = null) {
+      const startSeconds = parseTimeToSeconds(day.start);
+      const endSeconds = parseTimeToSeconds(day.end);
+      const nonWorkSeconds = Math.max(0, Number(day.nonWorkMinutes) || 0) * CONFIG.minute;
+      const adjustmentMinutes = Math.max(0, Number(day.adjustmentMinutes) || 0);
+      const note = [];
+      const base = {
+        index,
+        targetDay: isTargetDay(day, index),
+        workSeconds: 0,
+        roundedWorkMinutes: 0,
+        actualOvertimeSeconds: 0,
+        maxRequestMinutes: 0,
+        requestMinutes: 0,
+        residualSeconds: 0,
+        requestStart: "",
+        requestEnd: "",
+        pmsMinutes: 0,
+        overtimePmsMinutes: 0,
+        attendanceMinutes: 0,
+        specialMinutes: 0,
+        shortageImpactMinutes: 0,
+        note
+      };
+
+      if (day.workType === "출장" || day.workType === "휴가") {
+        base.workSeconds = CONFIG.regularMinutes * CONFIG.minute;
+        base.roundedWorkMinutes = CONFIG.regularMinutes;
+        base.pmsMinutes = CONFIG.regularMinutes;
+        base.attendanceMinutes = CONFIG.regularMinutes;
+        note.push(day.workType === "출장" ? "출장 8시간 고정" : "휴가 8시간 고정");
+        return base;
+      }
+
+      if (day.workType === "휴일") {
+        note.push("주간 목표 제외");
+        return base;
+      }
+
+      if (day.workType === "특근") {
+        note.push("특근 계산 기준 미정");
+        return base;
+      }
+
+      if (startSeconds == null || endSeconds == null) {
+        note.push("출퇴근 시간 필요");
+        return base;
+      }
+
+      const staySeconds = Math.max(0, endSeconds - startSeconds - nonWorkSeconds);
+      const breakSeconds = breakSecondsForStay(staySeconds);
+      const workSeconds = Math.max(0, staySeconds - breakSeconds);
+      const actualOvertimeSeconds = Math.max(
+        0,
+        endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds
+      );
+      const maxRequestMinutes = requestableFromActual(actualOvertimeSeconds, adjustmentMinutes);
+      const requestMinutes = overrideRequestMinutes == null
+        ? maxRequestMinutes
+        : Math.max(0, Math.min(maxRequestMinutes, overrideRequestMinutes));
+
+      let outingAttendanceMinutes = 0;
+      if (day.workType === "외출") {
+        const outingStart = parseTimeToSeconds(day.outingStart);
+        const outingEnd = parseTimeToSeconds(day.outingEnd);
+        if (outingStart != null && outingEnd != null && outingEnd > outingStart) {
+          const outingStaySeconds = outingEnd - outingStart;
+          outingAttendanceMinutes = roundPmsMinutes(Math.max(0, outingStaySeconds - breakSecondsForStay(outingStaySeconds)));
+        } else {
+          note.push("외출 시간 필요");
+        }
+      }
+
+      const roundedWorkMinutes = roundPmsMinutes(workSeconds);
+      const pmsMinutes = Math.max(0, roundedWorkMinutes - requestMinutes);
+      const requestEndSeconds = requestMinutes > 0 ? floorSecondsToStep(endSeconds) : null;
+      const requestStartSeconds = requestMinutes > 0
+        ? requestEndSeconds - requestMinutes * CONFIG.minute
+        : null;
+
+      base.workSeconds = workSeconds;
+      base.roundedWorkMinutes = roundedWorkMinutes;
+      base.actualOvertimeSeconds = actualOvertimeSeconds;
+      base.maxRequestMinutes = maxRequestMinutes;
+      base.requestMinutes = requestMinutes;
+      base.residualSeconds = Math.max(0, actualOvertimeSeconds - requestMinutes * CONFIG.minute);
+      base.requestStart = requestMinutes > 0 ? secondsToTimeInput(requestStartSeconds) : "-";
+      base.requestEnd = requestMinutes > 0 ? secondsToTimeInput(requestEndSeconds) : "-";
+      base.pmsMinutes = pmsMinutes;
+      base.overtimePmsMinutes = requestMinutes;
+      base.attendanceMinutes = outingAttendanceMinutes;
+      base.shortageImpactMinutes = maxRequestMinutes - requestMinutes;
+      if (outingAttendanceMinutes > 0) note.push(`외출 근태 ${outingAttendanceMinutes}분`);
+      return base;
+    }
+
+    function calculateWeek(requestPlan = null) {
+      const days = state.days.map((day, index) => calculateDay(day, index, requestPlan ? requestPlan[index] : null));
+      const targetMinutes = days.reduce((sum, result, index) => sum + (isTargetDay(state.days[index], index) ? CONFIG.regularMinutes : 0), 0);
+      const workMinutes = days.reduce((sum, result) => sum + roundPmsMinutes(result.workSeconds), 0);
+      const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
+      const overtimeMinutes = days.reduce((sum, result) => sum + result.overtimePmsMinutes, 0);
+      const actualOvertimeMinutes = roundPmsMinutes(days.reduce((sum, result) => sum + result.actualOvertimeSeconds, 0));
+      const pmsWorkMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
+      const attendanceMinutes = days.reduce((sum, result) => sum + result.attendanceMinutes, 0);
+      const shortageImpactMinutes = days.reduce((sum, result) => sum + result.shortageImpactMinutes, 0);
+      const shortageMinutes = Math.max(0, targetMinutes - pmsAppliedMinutes);
+      return {
+        days,
+        targetMinutes,
+        workMinutes,
+        pmsAppliedMinutes,
+        pmsWorkMinutes,
+        overtimeMinutes,
+        actualOvertimeMinutes,
+        attendanceMinutes,
+        shortageImpactMinutes,
+        shortageMinutes
+      };
+    }
+
+    function optimizePlan() {
+      const maxWeek = calculateWeek();
+      const plan = maxWeek.days.map((day) => day.maxRequestMinutes);
+      let week = calculateWeek(plan);
+
+      while (week.shortageMinutes > 0) {
+        let best = null;
+        for (let index = 0; index < plan.length; index += 1) {
+          const current = plan[index];
+          if (current <= 0) continue;
+          const candidate = current === CONFIG.minOvertimeRequestMinutes
+            ? 0
+            : current - CONFIG.overtimeStepMinutes;
+          if (candidate > 0 && candidate < CONFIG.minOvertimeRequestMinutes) continue;
+          const trial = [...plan];
+          trial[index] = candidate;
+          const trialWeek = calculateWeek(trial);
+          const shortageGain = week.shortageMinutes - trialWeek.shortageMinutes;
+          const overtimeLoss = current - candidate;
+          if (shortageGain <= 0) continue;
+          const score = shortageGain / overtimeLoss;
+          if (!best || score > best.score || (score === best.score && overtimeLoss < best.overtimeLoss)) {
+            best = { index, candidate, trialWeek, score, overtimeLoss };
+          }
+        }
+        if (!best) break;
+        plan[best.index] = best.candidate;
+        week = best.trialWeek;
+      }
+
+      state.optimizedMinutes = plan;
+      state.lastOptimized = true;
+      render();
+    }
+
+    function classForWorkType(type, index, result) {
+      const classes = [];
+      if (type === "특근") return "pending";
+      if (type === "휴일") return "holiday";
+      if (isWeekendIndex(index)) classes.push("weekend");
+      if ((type === "출근" || type === "외출") && result.workSeconds > 0 && result.workSeconds <= 8 * CONFIG.hour) {
+        classes.push("low-work");
+      }
+      if (result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour) {
+        classes.push("short-overtime");
+      }
+      return classes.join(" ");
+    }
+
+    function renderRows(results) {
+      rowsEl.innerHTML = "";
+      results.forEach((result, index) => {
+        const day = state.days[index];
+        const date = parseDateValue(day.date);
+        const tr = document.createElement("tr");
+        tr.className = classForWorkType(day.workType, index, result);
+        tr.dataset.index = String(index);
+
+        const needsClock = day.workType === "출근" || day.workType === "외출";
+        const needsOuting = day.workType === "외출";
+
+        tr.innerHTML = `
+          <td>
+            <div class="date-cell">
+              <span class="date-main">${date.getMonth() + 1}/${date.getDate()}</span>
+              <span class="date-sub">${CONFIG.weekdays[date.getDay()]}</span>
+            </div>
+          </td>
+          <td>
+            <select class="cell-select" data-field="workType">
+              ${CONFIG.workTypes.map((type) => `<option value="${type}" ${day.workType === type ? "selected" : ""}>${type}</option>`).join("")}
+            </select>
+          </td>
+          <td><input class="cell-input" type="text" inputmode="numeric" data-field="start" value="${day.start}" ${needsClock ? "" : "disabled"}></td>
+          <td><input class="cell-input" type="text" inputmode="numeric" data-field="end" value="${day.end}" ${needsClock ? "" : "disabled"}></td>
+          <td><input class="cell-input" type="text" inputmode="numeric" placeholder="분" data-field="nonWorkMinutes" value="${day.nonWorkMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
+          <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
+          <td><span class="output">${formatClock(result.workSeconds)}</span></td>
+          <td><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
+          <td><input class="cell-input" type="number" min="0" step="10" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><span class="output">${formatMinutes(result.requestMinutes)}</span></td>
+          <td><span class="output">${result.requestStart || "-"}</span></td>
+          <td><span class="output">${result.requestEnd || "-"}</span></td>
+          <td><span class="output">${formatMinutes(result.pmsMinutes)}</span></td>
+          <td><span class="output">${formatMinutes(result.overtimePmsMinutes)}</span></td>
+          <td><span class="output">${formatMinutes(result.attendanceMinutes)}</span></td>
+          <td><span class="output ${result.shortageImpactMinutes ? "warn" : "muted"}">${formatMinutes(result.shortageImpactMinutes)}</span></td>
+          <td><span class="muted">${result.note.join(", ")}</span></td>
+        `;
+        rowsEl.appendChild(tr);
+      });
+    }
+
+    function renderSummary(week) {
+      const workOver40 = week.workMinutes > CONFIG.weeklyWorkThresholdMinutes;
+      const overtimeWithinLimit = week.overtimeMinutes <= 12 * 60;
+      targetMetric.textContent = formatHoursMinutes(week.targetMinutes);
+      workMetric.textContent = formatHoursMinutes(week.workMinutes);
+      workMetric.className = `metric-value ${workOver40 ? "good" : "bad"}`;
+      pmsMetric.textContent = formatMinutes(week.pmsAppliedMinutes);
+      shortageMetric.textContent = formatMinutes(week.shortageMinutes);
+      shortageMetric.className = `metric-value ${week.shortageMinutes === 0 ? "good" : "bad"}`;
+      overtimeMetric.textContent = formatMinutes(week.overtimeMinutes);
+      overtimeMetric.className = `metric-value ${overtimeWithinLimit ? "" : "bad"}`;
+      fortyMetric.textContent = workOver40 ? "충족" : "미충족";
+      fortyMetric.className = `metric-value ${workOver40 ? "good" : "bad"}`;
+
+      const messages = [];
+      if (week.shortageMinutes === 0) {
+        messages.push("PMS 공수 부족이 없습니다.");
+      } else {
+        messages.push(`PMS 공수가 ${week.shortageMinutes}분 부족합니다.`);
+      }
+      if (workOver40) {
+        messages.push("주간 전체 업무시간이 40시간을 초과합니다.");
+      } else {
+        messages.push("주간 전체 업무시간이 40시간을 초과하지 않습니다.");
+      }
+      if (state.lastOptimized) {
+        messages.push("자동 최적화 결과가 테이블에 반영되어 있습니다.");
+      }
+      if (!overtimeWithinLimit) {
+        messages.push("인정 잔근 합계가 주 12시간 한도를 초과합니다.");
+      }
+      messageEl.textContent = messages.join(" ");
+    }
+
+    function renderTableTotals(week) {
+      const overtimeWithinLimit = week.overtimeMinutes <= 12 * 60;
+      tableWorkTotal.textContent = formatHoursMinutes(week.workMinutes);
+      tableActualOvertimeTotal.textContent = formatMinutes(week.actualOvertimeMinutes);
+      tableOvertimeTotal.textContent = formatMinutes(week.overtimeMinutes);
+      tableOvertimeTotal.className = `output ${overtimeWithinLimit ? "good" : "bad"}`;
+      tablePmsTotal.textContent = formatMinutes(week.pmsWorkMinutes);
+      tablePmsOvertimeTotal.textContent = formatMinutes(week.overtimeMinutes);
+      tableAttendanceTotal.textContent = formatMinutes(week.attendanceMinutes);
+      tableShortageTotal.textContent = formatMinutes(week.shortageImpactMinutes);
+      tableLimitNote.textContent = overtimeWithinLimit
+        ? `잔근 한도 여유 ${formatMinutes(12 * 60 - week.overtimeMinutes)}`
+        : `잔근 한도 초과 ${formatMinutes(week.overtimeMinutes - 12 * 60)}`;
+      tableLimitNote.className = overtimeWithinLimit ? "good" : "bad";
+    }
+
+    function render() {
+      const requestPlan = state.lastOptimized ? state.optimizedMinutes : null;
+      const week = calculateWeek(requestPlan);
+      renderRows(week.days);
+      renderTableTotals(week);
+      renderSummary(week);
+    }
+
+    function updateField(index, field, value) {
+      const day = state.days[index];
+      if (field === "workType") {
+        day.workType = value;
+        if (value === "출장" || value === "휴가" || value === "휴일" || value === "특근") {
+          day.start = value === "출장" ? "09:00" : "";
+          day.end = value === "출장" ? "18:00" : "";
+          day.nonWorkMinutes = 0;
+          day.outingStart = "";
+          day.outingEnd = "";
+          day.adjustmentMinutes = 0;
+        }
+        if (value === "출근" && (!day.start || !day.end)) {
+          day.start = "08:00";
+          day.end = "18:00";
+        }
+        if (value === "외출" && (!day.start || !day.end)) {
+          day.start = "08:00";
+          day.end = "18:00";
+        }
+      } else if (field === "nonWorkMinutes" || field === "adjustmentMinutes") {
+        day[field] = Math.max(0, Number(value) || 0);
+      } else {
+        day[field] = value;
+      }
+      state.lastOptimized = false;
+      state.optimizedMinutes = Array(7).fill(null);
+      render();
+    }
+
+    function normalizeTimeText(value) {
+      const text = String(value || "").trim();
+      if (!text) return "";
+      const parts = text.split(":").map((part) => part.trim());
+      if (parts.length < 2) return text;
+      const hours = Math.max(0, Math.min(23, Number(parts[0]) || 0));
+      const minutes = Math.max(0, Math.min(59, Number(parts[1]) || 0));
+      const seconds = parts.length >= 3 ? Math.max(0, Math.min(59, Number(parts[2]) || 0)) : null;
+      return seconds == null
+        ? `${pad2(hours)}:${pad2(minutes)}`
+        : `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`;
+    }
+
+    function applyPastedGrid(startIndex, startField, text) {
+      const rows = text
+        .trim()
+        .split(/\r?\n/)
+        .map((line) => line.split("\t").map((cell) => cell.trim()));
+      if (!rows.length || !rows[0].length) return false;
+
+      const twoColumnTimePaste = rows.some((row) => row.length >= 2)
+        && (startField === "start" || startField === "end");
+
+      rows.forEach((row, offset) => {
+        const day = state.days[startIndex + offset];
+        if (!day) return;
+        if (twoColumnTimePaste) {
+          if (row[0]) day.start = normalizeTimeText(row[0]);
+          if (row[1]) day.end = normalizeTimeText(row[1]);
+          if (day.workType === "휴일") day.workType = "출근";
+        } else if (startField && row[0] != null) {
+          const value = row[0].trim();
+          if (startField === "start" || startField === "end" || startField === "outingStart" || startField === "outingEnd") {
+            day[startField] = normalizeTimeText(value);
+          } else if (startField === "nonWorkMinutes" || startField === "adjustmentMinutes") {
+            day[startField] = Math.max(0, Number(value) || 0);
+          } else {
+            day[startField] = value;
+          }
+        }
+      });
+
+      state.lastOptimized = false;
+      state.optimizedMinutes = Array(7).fill(null);
+      render();
+      return true;
+    }
+
+    function applySample() {
+      const monday = parseDateValue(weekStartEl.value);
+      const sample = [
+        ["출근", "07:33", "20:36:20", 26, "", "", 0],
+        ["외출", "08:00", "20:31:45", 0, "08:00", "13:00", 0],
+        ["휴일", "", "", 0, "", "", 0],
+        ["출근", "07:33:38", "20:05:01", 30, "", "", 10],
+        ["출근", "08:14:47", "18:22:20", 0, "", "", 0],
+        ["휴일", "", "", 0, "", "", 0],
+        ["휴일", "", "", 0, "", "", 0]
+      ];
+      state.days = sample.map((item, index) => ({
+        date: localDateValue(addDays(monday, index)),
+        workType: item[0],
+        start: item[1],
+        end: item[2],
+        nonWorkMinutes: item[3],
+        outingStart: item[4],
+        outingEnd: item[5],
+        adjustmentMinutes: item[6]
+      }));
+      state.lastOptimized = false;
+      state.optimizedMinutes = Array(7).fill(null);
+      render();
+    }
+
+    rowsEl.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!target.dataset.field) return;
+      const index = Number(target.closest("tr").dataset.index);
+      updateField(index, target.dataset.field, target.value);
+    });
+
+    rowsEl.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!target.dataset.field) return;
+      const index = Number(target.closest("tr").dataset.index);
+      updateField(index, target.dataset.field, target.value);
+    });
+
+    rowsEl.addEventListener("paste", (event) => {
+      const target = event.target;
+      if (!target.dataset.field) return;
+      const text = event.clipboardData?.getData("text/plain") || "";
+      if (!text.includes("\t") && !text.includes("\n")) return;
+      const index = Number(target.closest("tr").dataset.index);
+      if (applyPastedGrid(index, target.dataset.field, text)) {
+        event.preventDefault();
+      }
+    });
+
+    weekStartEl.addEventListener("change", () => {
+      if (!weekStartEl.value) return;
+      setWeek(parseDateValue(weekStartEl.value));
+    });
+
+    document.querySelector("#optimizeButton").addEventListener("click", optimizePlan);
+    document.querySelector("#sampleButton").addEventListener("click", applySample);
+    document.querySelector("#clearButton").addEventListener("click", () => setWeek(parseDateValue(weekStartEl.value)));
+
+    setWeek(new Date());
+  </script>
+</body>
+</html>
