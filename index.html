@@ -306,6 +306,80 @@
       height: 44px;
     }
 
+    th:nth-child(1),
+    tbody td:nth-child(1) {
+      background: #f8fafc;
+    }
+
+    th:nth-child(n+2):nth-child(-n+7),
+    tbody td:nth-child(n+2):nth-child(-n+7) {
+      background: #f3f7ff;
+    }
+
+    th:nth-child(8),
+    tbody td:nth-child(8) {
+      background: #f1fbf7;
+    }
+
+    th:nth-child(n+9):nth-child(-n+12),
+    tbody td:nth-child(n+9):nth-child(-n+12) {
+      background: #fff8e8;
+    }
+
+    th:nth-child(n+13):nth-child(-n+14),
+    tbody td:nth-child(n+13):nth-child(-n+14) {
+      background: #f7f3ff;
+    }
+
+    th:nth-child(n+15):nth-child(-n+17),
+    tbody td:nth-child(n+15):nth-child(-n+17) {
+      background: #eefaf5;
+    }
+
+    th:nth-child(18),
+    tbody td:nth-child(18) {
+      background: #fff;
+    }
+
+    th:nth-child(2),
+    tbody td:nth-child(2),
+    th:nth-child(8),
+    tbody td:nth-child(8),
+    th:nth-child(9),
+    tbody td:nth-child(9),
+    th:nth-child(13),
+    tbody td:nth-child(13),
+    th:nth-child(15),
+    tbody td:nth-child(15),
+    th:nth-child(18),
+    tbody td:nth-child(18) {
+      border-left: 2px solid #95a3b5;
+    }
+
+    th:nth-child(1) {
+      background: #e9eef5;
+    }
+
+    th:nth-child(n+2):nth-child(-n+7) {
+      background: #e7eefc;
+    }
+
+    th:nth-child(8) {
+      background: #e3f5ee;
+    }
+
+    th:nth-child(n+9):nth-child(-n+12) {
+      background: #fff0cc;
+    }
+
+    th:nth-child(n+13):nth-child(-n+14) {
+      background: #eee7ff;
+    }
+
+    th:nth-child(n+15):nth-child(-n+17) {
+      background: #ddf3e8;
+    }
+
     tr.weekend td {
       background: #fbf7f2;
     }
@@ -491,7 +565,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 01:25</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 01:42</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -559,8 +633,8 @@
             <td colspan="7">주간 합계</td>
             <td><span id="tableWorkTotal" class="output">0:00</span></td>
             <td><span id="tableActualOvertimeTotal" class="output">0분</span></td>
-            <td></td>
-            <td><span id="tableShortageTotal" class="output">0분</span></td>
+            <td><span id="tableAdjustmentTotal" class="output bad">0분</span></td>
+            <td><span id="tableShortageTotal" class="output bad">0분</span></td>
             <td><span id="tableOvertimeTotal" class="output">0분</span></td>
             <td></td>
             <td></td>
@@ -646,6 +720,7 @@
     const messageEl = document.querySelector("#message");
     const tableWorkTotal = document.querySelector("#tableWorkTotal");
     const tableActualOvertimeTotal = document.querySelector("#tableActualOvertimeTotal");
+    const tableAdjustmentTotal = document.querySelector("#tableAdjustmentTotal");
     const tableOvertimeTotal = document.querySelector("#tableOvertimeTotal");
     const tablePmsTotal = document.querySelector("#tablePmsTotal");
     const tablePmsOvertimeTotal = document.querySelector("#tablePmsOvertimeTotal");
@@ -912,6 +987,7 @@
       const overtimeMinutes = days.reduce((sum, result) => sum + result.overtimePmsMinutes, 0);
       const standardWorkMinutes = Math.max(0, workMinutes - overtimeMinutes);
       const actualOvertimeMinutes = roundPmsMinutes(days.reduce((sum, result) => sum + result.actualOvertimeSeconds, 0));
+      const adjustmentMinutes = state.days.reduce((sum, day) => sum + (Number(day.adjustmentMinutes) || 0), 0);
       const pmsWorkMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
       const attendanceMinutes = days.reduce((sum, result) => sum + result.attendanceMinutes, 0);
       const shortageImpactMinutes = days.reduce((sum, result) => sum + result.shortageImpactMinutes, 0);
@@ -925,6 +1001,7 @@
         pmsWorkMinutes,
         overtimeMinutes,
         actualOvertimeMinutes,
+        adjustmentMinutes,
         attendanceMinutes,
         shortageImpactMinutes,
         shortageMinutes
@@ -1106,12 +1183,15 @@
       const overtimeWithinLimit = week.overtimeMinutes <= CONFIG.weeklyOvertimeLimitMinutes;
       tableWorkTotal.textContent = formatHoursMinutes(week.workMinutes);
       tableActualOvertimeTotal.textContent = formatMinutes(week.actualOvertimeMinutes);
+      tableAdjustmentTotal.textContent = formatMinutes(week.adjustmentMinutes);
+      tableAdjustmentTotal.className = "output bad";
       tableOvertimeTotal.textContent = formatMinutes(week.overtimeMinutes);
       tableOvertimeTotal.className = `output ${overtimeWithinLimit ? "good" : "bad"}`;
       tablePmsTotal.textContent = formatMinutes(week.pmsWorkMinutes);
       tablePmsOvertimeTotal.textContent = formatMinutes(week.overtimeMinutes);
       tableAttendanceTotal.textContent = formatMinutes(week.attendanceMinutes);
       tableShortageTotal.textContent = formatMinutes(week.shortageImpactMinutes);
+      tableShortageTotal.className = "output bad";
       tableLimitNote.textContent = overtimeWithinLimit
         ? `잔근 한도 여유 ${formatMinutes(CONFIG.weeklyOvertimeLimitMinutes - week.overtimeMinutes)}`
         : `잔근 한도 초과 ${formatMinutes(week.overtimeMinutes - CONFIG.weeklyOvertimeLimitMinutes)}`;
