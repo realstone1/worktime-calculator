@@ -177,6 +177,29 @@
       box-shadow: var(--shadow);
     }
 
+    .pms-shell {
+      margin-top: 14px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 0 8px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
     table {
       width: 100%;
       min-width: 1188px;
@@ -306,77 +329,77 @@
       height: 40px;
     }
 
-    th:nth-child(1),
-    tbody td:nth-child(1) {
+    .work-table th:nth-child(1),
+    .work-table tbody td:nth-child(1) {
       background: #f8fafc;
     }
 
-    th:nth-child(n+2):nth-child(-n+7),
-    tbody td:nth-child(n+2):nth-child(-n+7) {
+    .work-table th:nth-child(n+2):nth-child(-n+7),
+    .work-table tbody td:nth-child(n+2):nth-child(-n+7) {
       background: #f3f7ff;
     }
 
-    th:nth-child(8),
-    tbody td:nth-child(8) {
+    .work-table th:nth-child(8),
+    .work-table tbody td:nth-child(8) {
       background: #f1fbf7;
     }
 
-    th:nth-child(n+9):nth-child(-n+12),
-    tbody td:nth-child(n+9):nth-child(-n+12) {
+    .work-table th:nth-child(n+9):nth-child(-n+12),
+    .work-table tbody td:nth-child(n+9):nth-child(-n+12) {
       background: #fff8e8;
     }
 
-    th:nth-child(n+13):nth-child(-n+14),
-    tbody td:nth-child(n+13):nth-child(-n+14) {
+    .work-table th:nth-child(n+13):nth-child(-n+14),
+    .work-table tbody td:nth-child(n+13):nth-child(-n+14) {
       background: #f7f3ff;
     }
 
-    th:nth-child(n+15):nth-child(-n+17),
-    tbody td:nth-child(n+15):nth-child(-n+17) {
+    .work-table th:nth-child(n+15):nth-child(-n+17),
+    .work-table tbody td:nth-child(n+15):nth-child(-n+17) {
       background: #eefaf5;
     }
 
-    th:nth-child(18),
-    tbody td:nth-child(18) {
+    .work-table th:nth-child(18),
+    .work-table tbody td:nth-child(18) {
       background: #fff;
     }
 
-    th:nth-child(2),
-    tbody td:nth-child(2),
-    th:nth-child(8),
-    tbody td:nth-child(8),
-    th:nth-child(9),
-    tbody td:nth-child(9),
-    th:nth-child(13),
-    tbody td:nth-child(13),
-    th:nth-child(15),
-    tbody td:nth-child(15),
-    th:nth-child(18),
-    tbody td:nth-child(18) {
+    .work-table th:nth-child(2),
+    .work-table tbody td:nth-child(2),
+    .work-table th:nth-child(8),
+    .work-table tbody td:nth-child(8),
+    .work-table th:nth-child(9),
+    .work-table tbody td:nth-child(9),
+    .work-table th:nth-child(13),
+    .work-table tbody td:nth-child(13),
+    .work-table th:nth-child(15),
+    .work-table tbody td:nth-child(15),
+    .work-table th:nth-child(18),
+    .work-table tbody td:nth-child(18) {
       border-left: 2px solid #95a3b5;
     }
 
-    th:nth-child(1) {
+    .work-table th:nth-child(1) {
       background: #e9eef5;
     }
 
-    th:nth-child(n+2):nth-child(-n+7) {
+    .work-table th:nth-child(n+2):nth-child(-n+7) {
       background: #e7eefc;
     }
 
-    th:nth-child(8) {
+    .work-table th:nth-child(8) {
       background: #e3f5ee;
     }
 
-    th:nth-child(n+9):nth-child(-n+12) {
+    .work-table th:nth-child(n+9):nth-child(-n+12) {
       background: #fff0cc;
     }
 
-    th:nth-child(n+13):nth-child(-n+14) {
+    .work-table th:nth-child(n+13):nth-child(-n+14) {
       background: #eee7ff;
     }
 
-    th:nth-child(n+15):nth-child(-n+17) {
+    .work-table th:nth-child(n+15):nth-child(-n+17) {
       background: #ddf3e8;
     }
 
@@ -433,6 +456,102 @@
     .minute-input {
       text-align: right;
       font-variant-numeric: tabular-nums;
+    }
+
+    .project-cell {
+      min-width: 112px;
+      vertical-align: top;
+    }
+
+    .project-cell label {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 650;
+    }
+
+    .project-name {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .rate-input {
+      width: 72px;
+      text-align: right;
+    }
+
+    .assign-cell {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .assign-cell input {
+      width: 14px;
+      height: 14px;
+      min-width: 0;
+      margin: 0;
+    }
+
+    .assign-cell.disabled {
+      color: var(--muted);
+      opacity: 0.55;
+    }
+
+    .pms-date-cell.assignment-disabled {
+      background: #e5e7eb;
+    }
+
+    .pms-kind {
+      font-weight: 750;
+      text-align: center;
+      color: #3b4a5a;
+    }
+
+    .pms-table .project-cell,
+    .pms-project-head {
+      background: #f8fafc;
+    }
+
+    .pms-kind,
+    .pms-kind-head {
+      background: #f3f7ff;
+      border-left: 2px solid #95a3b5;
+    }
+
+    .pms-date-cell,
+    .pms-date-head {
+      background: #fff;
+    }
+
+    .pms-total-cell,
+    .pms-total-head {
+      background: #eefaf5;
+      border-left: 2px solid #95a3b5;
+    }
+
+    .pms-table tbody tr.pms-project-start > td {
+      border-top: 3px solid #6b7c8f;
+    }
+
+    .pms-table tbody tr.pms-project-end > td {
+      border-bottom: 2px solid #c7d0dc;
+    }
+
+    .pms-table tbody tr.project-alt .project-cell {
+      background: #f2f5f9;
+    }
+
+    .pms-table tbody tr.project-alt .pms-kind {
+      background: #edf6f3;
+    }
+
+    .pms-table tbody tr.project-alt .pms-total-cell {
+      background: #e7f6ef;
     }
 
     .output {
@@ -565,7 +684,7 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 02:14</span>
+          <span class="version-stamp">마지막 수정 2026-06-28 21:48</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
@@ -573,6 +692,10 @@
         </div>
       </div>
       <div class="toolbar">
+        <div class="field">
+          <label for="projectCount">프로젝트 수</label>
+          <input id="projectCount" type="number" min="1" max="10" step="1" value="1">
+        </div>
         <div class="field">
           <label for="weekStart">주 시작일</label>
           <input id="weekStart" type="date">
@@ -584,7 +707,7 @@
     </header>
 
     <section class="table-shell" aria-label="주간 근무시간 계산표">
-      <table>
+      <table class="work-table">
         <colgroup>
           <col style="width: 79px">
           <col style="width: 70px">
@@ -617,11 +740,11 @@
             <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">실제<br>잔근 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이나 수동 시뮬레이션을 위해 실제 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 공수 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 공수 조건에 따른 잔근 조정을 반영합니다. 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 근무 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 근무 조건에 따른 잔근 조정을 반영합니다. 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">잔근 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청 시간을 기준으로 계산된 잔근 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
             <th><span class="th-title">잔근 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
-            <th><span class="th-title">PMS<br>공수 <span class="th-help" tabindex="0" data-help="PMS에 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">PMS<br>근무 <span class="th-help" tabindex="0" data-help="PMS에 근무 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간과 PMS 근태 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
@@ -646,6 +769,18 @@
         </tfoot>
       </table>
     </section>
+
+    <section class="table-shell pms-shell" aria-label="PMS 입력 계산표">
+      <div class="section-title">
+        <h2>PMS 입력 계산</h2>
+        <span>프로젝트 수에 맞춰 PMS 근무 입력량을 나눠 보기 위한 영역입니다.</span>
+      </div>
+      <table class="pms-table">
+        <thead id="pmsHead"></thead>
+        <tbody id="pmsRows"></tbody>
+        <tfoot id="pmsFoot"></tfoot>
+      </table>
+    </section>
   </main>
 
   <section class="summary" aria-label="주간 요약">
@@ -663,18 +798,18 @@
         <div id="overtimeMetric" class="metric-value">0분</div>
       </div>
       <div class="metric">
-        <div class="metric-label">PMS 공수 합계</div>
+        <div class="metric-label">PMS 근무+근태</div>
         <div id="pmsMetric" class="metric-value">0분</div>
       </div>
       <div class="metric">
-        <div class="metric-label">PMS 공수 부족</div>
+        <div class="metric-label">PMS 근무 부족</div>
         <div id="shortageMetric" class="metric-value">0분</div>
       </div>
     </div>
     <div class="summary-bottom">
       <div id="message" class="message"></div>
       <div class="legend">
-        <span class="pill">PMS 부족 판정 = PMS 공수 합계</span>
+        <span class="pill">PMS 부족 판정 = PMS 근무 합계</span>
         <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
         <span class="pill">720분 초과분은 작은 잔근일부터 우선 차감</span>
         <span class="pill">큰 잔근일은 최대한 보존</span>
@@ -699,6 +834,7 @@
       requestBreakTriggerMinutes: 240,
       requestBreakMinutes: 30,
       weeklyOvertimeLimitMinutes: 720,
+      maxProjectCount: 10,
       holidayCountryCode: "KR",
       holidayApiBase: "https://date.nager.at/api/v3/PublicHolidays",
       weekdays: ["일", "월", "화", "수", "목", "금", "토"],
@@ -707,6 +843,13 @@
 
     const state = {
       days: [],
+      projectCount: 1,
+      projectRates: [100],
+      pmsAssignments: {
+        attendanceMinutes: Array(7).fill(0),
+        overtimePmsMinutes: Array(7).fill(0),
+        specialMinutes: Array(7).fill(0)
+      },
       optimizedMinutes: Array(7).fill(null),
       autoOptimizeEnabled: false,
       holidayByDate: new Map(),
@@ -717,6 +860,10 @@
     const holidayCache = new Map();
 
     const rowsEl = document.querySelector("#rows");
+    const pmsHeadEl = document.querySelector("#pmsHead");
+    const pmsRowsEl = document.querySelector("#pmsRows");
+    const pmsFootEl = document.querySelector("#pmsFoot");
+    const projectCountEl = document.querySelector("#projectCount");
     const weekStartEl = document.querySelector("#weekStart");
     const optimizeButton = document.querySelector("#optimizeButton");
     const targetMetric = document.querySelector("#targetMetric");
@@ -809,6 +956,105 @@
       return field === "nonWorkMinutes" || field === "adjustmentMinutes";
     }
 
+    function clampProjectCount(value) {
+      return Math.max(1, Math.min(CONFIG.maxProjectCount, Number(value) || 1));
+    }
+
+    function clampRate(value) {
+      return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+    }
+
+    function syncProjectRates() {
+      while (state.projectRates.length < state.projectCount) state.projectRates.push(0);
+      if (state.projectRates.length > state.projectCount) {
+        state.projectRates = state.projectRates.slice(0, state.projectCount);
+      }
+      state.projectRates = state.projectRates.map(clampRate);
+    }
+
+    function syncPmsAssignments() {
+      Object.values(state.pmsAssignments).forEach((assignments) => {
+        for (let index = 0; index < 7; index += 1) {
+          assignments[index] = Math.max(0, Math.min(state.projectCount - 1, Number(assignments[index]) || 0));
+        }
+      });
+    }
+
+    function applyRate(minutes, rate) {
+      return Math.round((Number(minutes) || 0) * clampRate(rate) / 100);
+    }
+
+    function pmsProjectMinutes(result, kind, projectIndex) {
+      if (kind.distribution === "assign") {
+        return state.pmsAssignments[kind.key][result.index] === projectIndex ? result[kind.key] : 0;
+      }
+      return applyRate(result[kind.key], state.projectRates[projectIndex] ?? 0);
+    }
+
+    function assignedProjectTotal(week, key, projectIndex) {
+      return week.days.reduce((sum, result) => (
+        state.pmsAssignments[key][result.index] === projectIndex ? sum + result[key] : sum
+      ), 0);
+    }
+
+    function buildWorkAllocations(week, projectCount) {
+      const dailyRemaining = week.days.map((result) => result.pmsMinutes);
+      const dailyCurrent = week.days.map((result) => result.attendanceMinutes);
+      const allocations = Array.from({ length: projectCount }, () => Array(7).fill(0));
+      const projectRemaining = Array.from({ length: projectCount }, (_, projectIndex) => {
+        const weeklyTarget = applyRate(week.targetMinutes, state.projectRates[projectIndex] ?? 0);
+        const assignedAttendance = assignedProjectTotal(week, "attendanceMinutes", projectIndex);
+        return Math.max(0, weeklyTarget - assignedAttendance);
+      });
+      let totalRemaining = projectRemaining.reduce((sum, minutes) => sum + minutes, 0);
+
+      function pickDay() {
+        const candidates = dailyRemaining
+          .map((minutes, dayIndex) => ({ dayIndex, minutes }))
+          .filter((item) => item.minutes > 0);
+        const underRegular = candidates.filter((item) => dailyCurrent[item.dayIndex] < CONFIG.regularMinutes);
+        const pool = underRegular.length ? underRegular : candidates;
+        if (!pool.length) return -1;
+        pool.sort((a, b) => {
+          const currentDiff = dailyCurrent[a.dayIndex] - dailyCurrent[b.dayIndex];
+          if (currentDiff !== 0) return currentDiff;
+          const capacityDiff = b.minutes - a.minutes;
+          if (capacityDiff !== 0) return capacityDiff;
+          return a.dayIndex - b.dayIndex;
+        });
+        return pool[0].dayIndex;
+      }
+
+      function pickProject(dayIndex) {
+        const candidates = projectRemaining
+          .map((minutes, projectIndex) => ({ projectIndex, minutes }))
+          .filter((item) => item.minutes > 0);
+        if (!candidates.length) return -1;
+        candidates.sort((a, b) => {
+          const remainingDiff = b.minutes - a.minutes;
+          if (remainingDiff !== 0) return remainingDiff;
+          const dayLoadDiff = allocations[a.projectIndex][dayIndex] - allocations[b.projectIndex][dayIndex];
+          if (dayLoadDiff !== 0) return dayLoadDiff;
+          return a.projectIndex - b.projectIndex;
+        });
+        return candidates[0].projectIndex;
+      }
+
+      while (totalRemaining > 0) {
+        const dayIndex = pickDay();
+        if (dayIndex < 0) break;
+        const projectIndex = pickProject(dayIndex);
+        if (projectIndex < 0) break;
+        allocations[projectIndex][dayIndex] += 1;
+        projectRemaining[projectIndex] -= 1;
+        dailyRemaining[dayIndex] -= 1;
+        dailyCurrent[dayIndex] += 1;
+        totalRemaining -= 1;
+      }
+
+      return allocations;
+    }
+
     function roundPmsMinutes(seconds) {
       if (!Number.isFinite(seconds) || seconds <= 0) return 0;
       const wholeMinutes = Math.floor(seconds / CONFIG.minute);
@@ -834,10 +1080,15 @@
 
     function requestableFromActual(actualOvertimeSeconds, adjustmentMinutes) {
       const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
-      const base = floorToStepMinutes(adjustedMinutes);
-      if (base < CONFIG.minOvertimeRequestMinutes) return 0;
-      const requestableMinutes = requestMinutesFromApplicationDuration(base);
-      return requestableMinutes >= CONFIG.minOvertimeRequestMinutes ? requestableMinutes : 0;
+      const maxApplicationMinutes = floorToStepMinutes(adjustedMinutes);
+      let bestRequestMinutes = 0;
+      for (let minutes = maxApplicationMinutes; minutes >= CONFIG.minOvertimeRequestMinutes; minutes -= CONFIG.overtimeStepMinutes) {
+        const requestableMinutes = requestMinutesFromApplicationDuration(minutes);
+        if (requestableMinutes > bestRequestMinutes) {
+          bestRequestMinutes = requestableMinutes;
+        }
+      }
+      return bestRequestMinutes >= CONFIG.minOvertimeRequestMinutes ? bestRequestMinutes : 0;
     }
 
     function requestMinutesFromApplicationDuration(applicationMinutes) {
@@ -848,12 +1099,19 @@
       if (requestMinutes <= 0) return 0;
       const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
       const maxApplicationMinutes = floorToStepMinutes(adjustedMinutes);
+      let exactMinutes = null;
+      let fallback = { applicationMinutes: requestMinutes, requestableMinutes: -1 };
       for (let minutes = maxApplicationMinutes; minutes >= 0; minutes -= CONFIG.overtimeStepMinutes) {
-        if (requestMinutesFromApplicationDuration(minutes) <= requestMinutes) {
-          return minutes;
+        const requestableMinutes = requestMinutesFromApplicationDuration(minutes);
+        if (requestableMinutes === requestMinutes) {
+          exactMinutes = minutes;
+        }
+        if (requestableMinutes < requestMinutes && requestableMinutes > fallback.requestableMinutes) {
+          fallback = { applicationMinutes: minutes, requestableMinutes };
         }
       }
-      return requestMinutes;
+      if (exactMinutes != null) return exactMinutes;
+      return fallback.applicationMinutes;
     }
 
     function isWeekendIndex(index) {
@@ -990,7 +1248,7 @@
       if (day.workType === "출장" || day.workType === "휴가") {
         base.workSeconds = CONFIG.regularMinutes * CONFIG.minute;
         base.roundedWorkMinutes = CONFIG.regularMinutes;
-        base.pmsMinutes = CONFIG.regularMinutes;
+        base.pmsMinutes = 0;
         base.attendanceMinutes = CONFIG.regularMinutes;
         note.push(day.workType === "출장" ? "출장 8시간 고정" : "휴가 8시간 고정");
         return base;
@@ -1038,7 +1296,9 @@
       }
 
       const roundedWorkMinutes = roundPmsMinutes(workSeconds);
-      const pmsMinutes = isOfficialHolidayWork ? 0 : Math.max(0, roundedWorkMinutes - requestMinutes);
+      const pmsMinutes = isOfficialHolidayWork
+        ? 0
+        : Math.max(0, roundedWorkMinutes - requestMinutes - outingAttendanceMinutes);
       const requestEndSeconds = requestMinutes > 0 ? floorSecondsToStep(endSeconds) : null;
       const requestApplicationMinutes = requestApplicationDurationMinutes(
         requestMinutes,
@@ -1070,7 +1330,7 @@
       const days = state.days.map((day, index) => calculateDay(day, index, requestPlan ? requestPlan[index] : null));
       const targetMinutes = days.reduce((sum, result, index) => sum + (isTargetDay(state.days[index], index) ? CONFIG.regularMinutes : 0), 0);
       const workMinutes = days.reduce((sum, result) => sum + roundPmsMinutes(result.workSeconds), 0);
-      const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
+      const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes + result.attendanceMinutes, 0);
       const overtimeMinutes = days.reduce((sum, result) => sum + result.overtimePmsMinutes, 0);
       const standardWorkMinutes = Math.max(0, workMinutes - overtimeMinutes);
       const actualOvertimeMinutes = roundPmsMinutes(days.reduce((sum, result) => sum + result.actualOvertimeSeconds, 0));
@@ -1234,6 +1494,98 @@
       });
     }
 
+    function isHolidayWithoutSpecialWork(result) {
+      const day = state.days[result.index];
+      return day.workType === "휴일" && result.specialMinutes <= 0;
+    }
+
+    function renderPmsInputTable(week) {
+      const projectCount = clampProjectCount(state.projectCount);
+      state.projectCount = projectCount;
+      syncProjectRates();
+      syncPmsAssignments();
+
+      const dateHeaders = week.days.map((result) => {
+        const day = state.days[result.index];
+        const date = parseDateValue(day.date);
+        return `<th class="pms-date-head">${date.getMonth() + 1}/${date.getDate()}<span class="th-unit">${CONFIG.weekdays[date.getDay()]}</span></th>`;
+      }).join("");
+      const pmsTable = pmsHeadEl.closest("table");
+      pmsTable.style.minWidth = "920px";
+      const workAllocations = buildWorkAllocations(week, projectCount);
+
+      pmsHeadEl.innerHTML = `
+        <tr>
+          <th class="pms-project-head">프로젝트</th>
+          <th class="pms-kind-head">구분</th>
+          ${dateHeaders}
+          <th class="pms-total-head">합계<span class="th-unit">[분]</span></th>
+        </tr>
+      `;
+
+      const kinds = [
+        { key: "pmsMinutes", label: "근무", distribution: "work" },
+        { key: "overtimePmsMinutes", label: "잔근", distribution: "assign" },
+        { key: "attendanceMinutes", label: "근태", distribution: "assign" },
+        { key: "specialMinutes", label: "특근", distribution: "assign" }
+      ];
+
+      pmsRowsEl.innerHTML = Array.from({ length: projectCount }, (_, projectIndex) => {
+        const rate = state.projectRates[projectIndex] ?? 0;
+        return kinds.map((kind, kindIndex) => {
+          const values = kind.distribution === "work"
+            ? workAllocations[projectIndex]
+            : week.days.map((result) => pmsProjectMinutes(result, kind, projectIndex));
+          const total = values.reduce((sum, minutes) => sum + minutes, 0);
+          return `
+            <tr class="pms-project-row ${projectIndex % 2 === 1 ? "project-alt" : ""} ${kindIndex === 0 ? "pms-project-start" : ""} ${kindIndex === kinds.length - 1 ? "pms-project-end" : ""}">
+              ${kindIndex === 0 ? `
+                <td class="project-cell" rowspan="4">
+                  <span class="project-name">프로젝트 ${projectIndex + 1}</span>
+                  <label>
+                    참여율 [%]
+                    <input class="cell-input rate-input" type="number" min="0" max="100" step="1" data-project-rate="${projectIndex}" value="${rate}">
+                  </label>
+                </td>
+              ` : ""}
+              <td class="pms-kind">${kind.label}</td>
+              ${values.map((minutes, dayIndex) => {
+                const result = week.days[dayIndex];
+                const holidayWithoutSpecialWork = isHolidayWithoutSpecialWork(result);
+                const sourceMinutes = holidayWithoutSpecialWork ? 0 : result[kind.key];
+                if (kind.distribution !== "assign") {
+                  return `<td class="pms-date-cell ${holidayWithoutSpecialWork ? "assignment-disabled" : ""}"><span class="output">${formatMinutes(holidayWithoutSpecialWork ? 0 : minutes)}</span></td>`;
+                }
+                const disabled = holidayWithoutSpecialWork || sourceMinutes <= 0;
+                const checked = !disabled && state.pmsAssignments[kind.key][dayIndex] === projectIndex;
+                return `
+                  <td class="pms-date-cell ${checked ? "" : "assignment-disabled"}">
+                    <label class="assign-cell ${disabled ? "disabled" : ""}">
+                      <input type="checkbox" data-pms-assign-kind="${kind.key}" data-pms-assign-day="${dayIndex}" data-pms-assign-project="${projectIndex}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""}>
+                      <span class="output">${checked ? formatMinutes(sourceMinutes) : formatMinutes(0)}</span>
+                    </label>
+                  </td>
+                `;
+              }).join("")}
+              <td class="pms-total-cell"><span class="output">${formatMinutes(total)}</span></td>
+            </tr>
+          `;
+        }).join("");
+      }).join("");
+
+      const totalRate = state.projectRates.reduce((sum, rate) => sum + rate, 0);
+      const kindTotals = kinds.map((kind) => week.days.reduce((sum, result) => sum + result[kind.key], 0));
+
+      pmsFootEl.innerHTML = `
+        <tr>
+          <td class="pms-project-head">참여율 합계</td>
+          <td class="pms-kind-head"><span class="${totalRate === 100 ? "good" : "warn"}">${totalRate}%</span></td>
+          <td class="pms-date-cell" colspan="7">주간 근무 목표: ${formatMinutes(week.targetMinutes)} / 입력 가능 PMS 근무: ${formatMinutes(kindTotals[0])}, 잔근 ${formatMinutes(kindTotals[1])}, 근태 ${formatMinutes(kindTotals[2])}, 특근 ${formatMinutes(kindTotals[3])}</td>
+          <td class="pms-total-cell"></td>
+        </tr>
+      `;
+    }
+
     function renderSummary(week) {
       const standardWorkMet = week.standardWorkMinutes >= week.targetMinutes;
       const overtimeWithinLimit = week.overtimeMinutes <= CONFIG.weeklyOvertimeLimitMinutes;
@@ -1248,9 +1600,9 @@
 
       const messages = [];
       if (week.shortageMinutes === 0) {
-        messages.push("PMS 공수 부족이 없습니다.");
+        messages.push("PMS 근무 부족이 없습니다.");
       } else {
-        messages.push(`PMS 공수가 ${week.shortageMinutes}분 부족합니다.`);
+        messages.push(`PMS 근무가 ${week.shortageMinutes}분 부족합니다.`);
       }
       if (standardWorkMet) {
         messages.push("주간 근무시간이 주간 표준 근무 시간 이상입니다.");
@@ -1291,10 +1643,8 @@
       tableAttendanceTotal.textContent = formatMinutes(week.attendanceMinutes);
       tableShortageTotal.textContent = formatMinutes(week.shortageImpactMinutes);
       tableShortageTotal.className = "output bad";
-      tableLimitNote.textContent = overtimeWithinLimit
-        ? `잔근 한도 여유 ${formatMinutes(CONFIG.weeklyOvertimeLimitMinutes - week.overtimeMinutes)}`
-        : `잔근 한도 초과 ${formatMinutes(week.overtimeMinutes - CONFIG.weeklyOvertimeLimitMinutes)}`;
-      tableLimitNote.className = overtimeWithinLimit ? "good" : "bad";
+      tableLimitNote.textContent = `PMS 근무+근태=${formatMinutes(week.pmsWorkMinutes + week.attendanceMinutes)}`;
+      tableLimitNote.className = "muted";
     }
 
     function render() {
@@ -1305,6 +1655,7 @@
       const requestPlan = state.autoOptimizeEnabled ? state.optimizedMinutes : null;
       const week = calculateWeek(requestPlan);
       renderRows(week.days);
+      renderPmsInputTable(week);
       renderTableTotals(week);
       renderSummary(week);
     }
@@ -1450,6 +1801,47 @@
     weekStartEl.addEventListener("change", () => {
       if (!weekStartEl.value) return;
       setWeek(parseDateValue(weekStartEl.value));
+    });
+
+    projectCountEl.addEventListener("change", () => {
+      const value = clampProjectCount(projectCountEl.value);
+      state.projectCount = value;
+      syncProjectRates();
+      syncPmsAssignments();
+      projectCountEl.value = String(value);
+      render();
+    });
+
+    projectCountEl.addEventListener("input", () => {
+      const value = clampProjectCount(projectCountEl.value);
+      state.projectCount = value;
+      syncProjectRates();
+      syncPmsAssignments();
+      render();
+    });
+
+    pmsRowsEl.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!target.dataset.projectRate) return;
+      const index = Number(target.dataset.projectRate);
+      state.projectRates[index] = clampRate(target.value);
+    });
+
+    pmsRowsEl.addEventListener("change", (event) => {
+      const target = event.target;
+      if (target.dataset.pmsAssignKind) {
+        const kind = target.dataset.pmsAssignKind;
+        const dayIndex = Number(target.dataset.pmsAssignDay);
+        const projectIndex = Number(target.dataset.pmsAssignProject);
+        state.pmsAssignments[kind][dayIndex] = projectIndex;
+        render();
+        return;
+      }
+      if (!target.dataset.projectRate) return;
+      const index = Number(target.dataset.projectRate);
+      state.projectRates[index] = clampRate(target.value);
+      target.value = String(state.projectRates[index]);
+      render();
     });
 
     optimizeButton.addEventListener("click", toggleAutoOptimize);
