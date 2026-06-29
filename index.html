@@ -130,11 +130,13 @@
     }
 
     input:disabled,
-    select:disabled {
+    select:disabled,
+    button:disabled {
       border-color: #a9b2bd;
       background: #cfd5dd;
       color: #5f6b78;
       opacity: 1;
+      cursor: not-allowed;
     }
 
     .outing-time:not(:disabled) {
@@ -653,6 +655,94 @@
       white-space: nowrap;
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(22, 31, 44, 0.38);
+    }
+
+    .modal-panel {
+      width: min(560px, 100%);
+      max-height: min(720px, 92vh);
+      overflow: auto;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(27, 39, 55, 0.22);
+    }
+
+    .modal-header,
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 10px;
+      padding: 12px 14px;
+    }
+
+    .detail-table {
+      min-width: 0;
+      table-layout: fixed;
+    }
+
+    .detail-table th,
+    .detail-table td {
+      height: 34px;
+      padding: 5px;
+    }
+
+    .detail-table tfoot td {
+      position: static;
+    }
+
+    .detail-table .icon-button {
+      width: 26px;
+      min-width: 26px;
+      padding: 0;
+    }
+
+    .nonwork-detail-button {
+      cursor: pointer;
+    }
+
+    .header-action {
+      appearance: none;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      cursor: pointer;
+    }
+
+    .header-action[data-week-nonwork-detail] {
+      color: #1d4ed8;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
     .hidden {
       display: none;
     }
@@ -684,11 +774,12 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-28 23:29</span>
+          <span class="version-stamp">마지막 수정 2026-06-30 01:43</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
-          <span>HARU 주간 근무 시간 페이지에서 인정 출근시간, 인정 퇴근시간, 비업무시간을 복사/붙여넣기 합니다.</span>
+          <span>HARU 근태/주차별출퇴근현황에서 인정 출근시간, 인정 퇴근시간, 비업무시간을 복사/붙여넣기 합니다.</span>
+          <span>잔근 신청 시간대에 비업무시간이 있으면 비업무시간 열 제목이나 각 날짜의 비업무시간 칸을 클릭해 상세 내역을 입력해야 잔근 신청 내역에 정확히 반영됩니다.</span>
         </div>
       </div>
       <div class="toolbar">
@@ -702,7 +793,7 @@
         </div>
         <button id="sampleButton" type="button">예시 입력</button>
         <button id="clearButton" type="button">초기화</button>
-        <button id="optimizeButton" type="button" aria-pressed="false">잔근 자동 최적화 OFF</button>
+        <button id="optimizeButton" type="button" aria-pressed="true">잔근 자동 최적화 ON</button>
       </div>
     </header>
 
@@ -735,20 +826,20 @@
             <th><span class="th-title">근태 <span class="th-help" tabindex="0" data-help="출근, 외출, 출장, 휴가, 휴일, 특근 중 하나를 선택합니다.">?</span></span><span class="th-unit">[구분]</span></th>
             <th><span class="th-title">인정<br>출근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 출근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">인정<br>퇴근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 퇴근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">비업무<br>시간 <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title"><button class="header-action" type="button" data-week-nonwork-detail="true" title="주간 전체 비업무시간 내역 입력">비업무<br>시간</button> <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다. 제목을 클릭하면 한 주간 비업무시간 상세 내역을 날짜별로 입력할 수 있습니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">외출<br>시작시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 시작시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">외출<br>종료시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 종료시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
             <th><span class="th-title">실제<br>잔근 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이나 수동 시뮬레이션을 위해 실제 잔근 시간에서 차감할 시간을 입력합니다. 잔근 신청 시작 시간-종료 시간 내에 비업무 시간이 있어 시스템에서 잔근 인정 시간이 차감되는 경우에도 활용 가능합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이 계산 결과보다 작거나 다르거나 수동 시뮬레이션이 필요한 경우, 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 근무 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 근무 조건에 따른 잔근 조정을 반영합니다. 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분, 최대 5회) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 근무 조건에 따른 잔근 조정을 반영합니다. 잔근 신청 후 PMS 근무+근태가 480분 이상 남도록 제한하며, 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분, 최대 5회) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">잔근 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청 시간을 기준으로 계산된 잔근 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
             <th><span class="th-title">잔근 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
             <th><span class="th-title">PMS<br>근무 <span class="th-help" tabindex="0" data-help="PMS에 근무 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간과 PMS 근태 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">PMS<br>특근 <span class="th-help" tabindex="0" data-help="휴일 특근으로 PMS에 입력할 인정 특근 시간입니다. 인정 출근시간은 다음 10분 단위로 올림하고 인정 퇴근시간은 10분 단위로 내린 신청 구간을 기준으로 계산합니다. 4시간마다 휴게시간 30분을 반영하며, 인정 시간이 최소 240분 이상일 때 신청 가능하고 최대 인정 시간은 480분입니다.">?</span></span><span class="th-unit">[분]</span></th>
+            <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
             <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
           </tr>
         </thead>
@@ -765,8 +856,8 @@
             <td></td>
             <td><span id="tablePmsTotal" class="output">0분</span></td>
             <td><span id="tablePmsOvertimeTotal" class="output">0분</span></td>
-            <td><span id="tableAttendanceTotal" class="output">0분</span></td>
             <td><span id="tableSpecialTotal" class="output">0분</span></td>
+            <td><span id="tableAttendanceTotal" class="output">0분</span></td>
             <td><span id="tableLimitNote" class="muted">잔근 한도 12시간</span></td>
           </tr>
         </tfoot>
@@ -823,6 +914,40 @@
     </div>
   </section>
 
+  <div id="nonWorkModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="nonWorkModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="nonWorkModalTitle">비업무시간 상세</h2>
+        <button id="nonWorkCloseButton" class="icon-button" type="button" aria-label="닫기">×</button>
+      </div>
+      <div class="modal-body">
+        <table class="detail-table">
+          <thead id="nonWorkDetailHead">
+            <tr>
+              <th>출문 시간</th>
+              <th>입문 시간</th>
+              <th>비업무시간</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="nonWorkDetailRows"></tbody>
+          <tfoot>
+            <tr>
+              <td id="nonWorkDetailTotalLabel" colspan="2">합계</td>
+              <td><span id="nonWorkDetailTotal" class="output">0분</span></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <button id="nonWorkAddButton" type="button">행 추가</button>
+      </div>
+      <div class="modal-actions">
+        <button id="nonWorkApplyButton" class="primary" type="button">입력</button>
+        <button id="nonWorkCancelButton" type="button">취소</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     "use strict";
 
@@ -857,10 +982,13 @@
         specialMinutes: Array(7).fill(0)
       },
       optimizedMinutes: Array(7).fill(null),
-      autoOptimizeEnabled: false,
+      autoOptimizeEnabled: true,
       holidayByDate: new Map(),
       holidayLoadStatus: "idle",
-      holidayRequestId: 0
+      holidayRequestId: 0,
+      nonWorkModalDayIndex: null,
+      nonWorkDraft: [],
+      nonWorkModalMode: "day"
     };
 
     const holidayCache = new Map();
@@ -878,6 +1006,16 @@
     const shortageMetric = document.querySelector("#shortageMetric");
     const overtimeMetric = document.querySelector("#overtimeMetric");
     const messageEl = document.querySelector("#message");
+    const nonWorkModal = document.querySelector("#nonWorkModal");
+    const nonWorkModalTitle = document.querySelector("#nonWorkModalTitle");
+    const nonWorkDetailHead = document.querySelector("#nonWorkDetailHead");
+    const nonWorkDetailRows = document.querySelector("#nonWorkDetailRows");
+    const nonWorkDetailTotal = document.querySelector("#nonWorkDetailTotal");
+    const nonWorkDetailTotalLabel = document.querySelector("#nonWorkDetailTotalLabel");
+    const nonWorkAddButton = document.querySelector("#nonWorkAddButton");
+    const nonWorkApplyButton = document.querySelector("#nonWorkApplyButton");
+    const nonWorkCancelButton = document.querySelector("#nonWorkCancelButton");
+    const nonWorkCloseButton = document.querySelector("#nonWorkCloseButton");
     const tableWorkTotal = document.querySelector("#tableWorkTotal");
     const tableActualOvertimeTotal = document.querySelector("#tableActualOvertimeTotal");
     const tableAdjustmentTotal = document.querySelector("#tableAdjustmentTotal");
@@ -956,7 +1094,17 @@
     }
 
     function parseMinuteText(value) {
-      return Math.max(0, Number(String(value || "").replace(/[^\d]/g, "")) || 0);
+      const text = String(value || "").trim();
+      const normalized = text.replace(/,/g, "");
+      if (/^\d+(\.\d+)?$/.test(normalized)) {
+        return Math.max(0, Number(normalized) || 0);
+      }
+      return Math.max(0, Number(text.replace(/[^\d]/g, "")) || 0);
+    }
+
+    function parsePastedMinuteText(value, field) {
+      const minutes = parseMinuteText(value);
+      return field === "nonWorkMinutes" && minutes >= 1000 ? minutes / 100 : minutes;
     }
 
     function isMinuteInputField(field) {
@@ -1090,12 +1238,12 @@
       return Math.ceil(seconds / stepSeconds) * stepSeconds;
     }
 
-    function requestableFromActual(actualOvertimeSeconds, adjustmentMinutes) {
+    function requestableFromActual(actualOvertimeSeconds, adjustmentMinutes, day = null, requestEndSeconds = null) {
       const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
       const maxApplicationMinutes = floorToStepMinutes(adjustedMinutes);
       let bestRequestMinutes = 0;
       for (let minutes = maxApplicationMinutes; minutes >= CONFIG.minOvertimeRequestMinutes; minutes -= CONFIG.overtimeStepMinutes) {
-        const requestableMinutes = requestMinutesFromApplicationDuration(minutes);
+        const requestableMinutes = requestMinutesFromApplicationWindow(minutes, day, requestEndSeconds);
         if (requestableMinutes > bestRequestMinutes) {
           bestRequestMinutes = requestableMinutes;
         }
@@ -1107,14 +1255,60 @@
       return Math.max(0, applicationMinutes - breakSecondsForStay(applicationMinutes * CONFIG.minute) / CONFIG.minute);
     }
 
-    function requestApplicationDurationMinutes(requestMinutes, actualOvertimeSeconds, adjustmentMinutes) {
+    function nonWorkDetailDurationMinutes(detail) {
+      return parseMinuteText(detail.minutes);
+    }
+
+    function dayIndexFromDetailDate(value) {
+      const text = String(value || "").trim();
+      if (!text) return -1;
+      const normalized = text.replace(/\./g, "-").replace(/[월/]/g, "-").replace(/일/g, "");
+      const numbers = normalized.match(/\d+/g)?.map(Number) || [];
+      if (!numbers.length) return -1;
+      let month;
+      let date;
+      if (numbers.length >= 3) {
+        month = numbers[1];
+        date = numbers[2];
+      } else if (numbers.length >= 2) {
+        month = numbers[0];
+        date = numbers[1];
+      } else {
+        date = numbers[0];
+      }
+      return state.days.findIndex((day) => {
+        const current = parseDateValue(day.date);
+        return current.getDate() === date && (month == null || current.getMonth() + 1 === month);
+      });
+    }
+
+    function nonWorkDetailOverlapMinutes(day, startSeconds, endSeconds) {
+      if (!Array.isArray(day.nonWorkDetails) || startSeconds == null || endSeconds == null || endSeconds <= startSeconds) return 0;
+      return day.nonWorkDetails.reduce((sum, detail) => {
+        const outSeconds = parseTimeToSeconds(detail.out);
+        const inSeconds = parseTimeToSeconds(detail.in);
+        if (outSeconds == null || inSeconds == null || inSeconds <= outSeconds) return sum;
+        const overlapSeconds = Math.max(0, Math.min(endSeconds, inSeconds) - Math.max(startSeconds, outSeconds));
+        if (overlapSeconds <= 0) return sum;
+        return sum + Math.min(nonWorkDetailDurationMinutes(detail), Math.round(overlapSeconds / CONFIG.minute));
+      }, 0);
+    }
+
+    function requestMinutesFromApplicationWindow(applicationMinutes, day, requestEndSeconds) {
+      if (!day || requestEndSeconds == null) return requestMinutesFromApplicationDuration(applicationMinutes);
+      const requestStartSeconds = requestEndSeconds - applicationMinutes * CONFIG.minute;
+      const overlapMinutes = nonWorkDetailOverlapMinutes(day, requestStartSeconds, requestEndSeconds);
+      return Math.max(0, requestMinutesFromApplicationDuration(applicationMinutes) - overlapMinutes);
+    }
+
+    function requestApplicationDurationMinutes(requestMinutes, actualOvertimeSeconds, adjustmentMinutes, day = null, requestEndSeconds = null) {
       if (requestMinutes <= 0) return 0;
       const adjustedMinutes = actualOvertimeSeconds / CONFIG.minute - (Number(adjustmentMinutes) || 0);
       const maxApplicationMinutes = floorToStepMinutes(adjustedMinutes);
       let exactMinutes = null;
       let fallback = { applicationMinutes: requestMinutes, requestableMinutes: -1 };
       for (let minutes = maxApplicationMinutes; minutes >= 0; minutes -= CONFIG.overtimeStepMinutes) {
-        const requestableMinutes = requestMinutesFromApplicationDuration(minutes);
+        const requestableMinutes = requestMinutesFromApplicationWindow(minutes, day, requestEndSeconds);
         if (requestableMinutes === requestMinutes) {
           exactMinutes = minutes;
         }
@@ -1212,6 +1406,7 @@
         start: isWeekendIndex(index) ? "" : "08:00",
         end: isWeekendIndex(index) ? "" : "18:00",
         nonWorkMinutes: 0,
+        nonWorkDetails: [],
         outingStart: "",
         outingEnd: "",
         adjustmentMinutes: 0
@@ -1286,6 +1481,19 @@
           0,
           endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds
         );
+
+      let outingAttendanceMinutes = 0;
+      if (day.workType === "외출") {
+        const outingStart = parseTimeToSeconds(day.outingStart);
+        const outingEnd = parseTimeToSeconds(day.outingEnd);
+        if (outingStart != null && outingEnd != null && outingEnd > outingStart) {
+          const outingStaySeconds = outingEnd - outingStart;
+          outingAttendanceMinutes = roundPmsMinutes(Math.max(0, outingStaySeconds - breakSecondsForStay(outingStaySeconds)));
+        } else {
+          note.push("외출 시간 필요");
+        }
+      }
+
       if (day.workType === "특근") {
         const specialStartSeconds = ceilSecondsToStep(startSeconds);
         const specialEndSeconds = floorSecondsToStep(endSeconds);
@@ -1303,34 +1511,30 @@
         return base;
       }
 
-      const rawMaxRequestMinutes = requestableFromActual(actualOvertimeSeconds, adjustmentMinutes);
-      const maxRequestMinutes = isOfficialHolidayWork
+      const requestEndSeconds = actualOvertimeSeconds > 0 ? floorSecondsToStep(endSeconds) : null;
+      const rawMaxRequestMinutes = requestableFromActual(actualOvertimeSeconds, adjustmentMinutes, day, requestEndSeconds);
+      const pmsWorkFloorRequestLimit = isOfficialHolidayWork
         ? rawMaxRequestMinutes
-        : Math.min(CONFIG.maxWeekdayOvertimeRequestMinutes, rawMaxRequestMinutes);
+        : floorToStepMinutes(Math.max(0, roundedWorkMinutes - CONFIG.regularMinutes));
+      const cappedMaxRequestMinutes = isOfficialHolidayWork
+        ? rawMaxRequestMinutes
+        : Math.min(CONFIG.maxWeekdayOvertimeRequestMinutes, rawMaxRequestMinutes, pmsWorkFloorRequestLimit);
+      const maxRequestMinutes = cappedMaxRequestMinutes >= CONFIG.minOvertimeRequestMinutes
+        ? cappedMaxRequestMinutes
+        : 0;
       const requestMinutes = overrideRequestMinutes == null
         ? maxRequestMinutes
         : Math.max(0, Math.min(maxRequestMinutes, overrideRequestMinutes));
 
-      let outingAttendanceMinutes = 0;
-      if (day.workType === "외출") {
-        const outingStart = parseTimeToSeconds(day.outingStart);
-        const outingEnd = parseTimeToSeconds(day.outingEnd);
-        if (outingStart != null && outingEnd != null && outingEnd > outingStart) {
-          const outingStaySeconds = outingEnd - outingStart;
-          outingAttendanceMinutes = roundPmsMinutes(Math.max(0, outingStaySeconds - breakSecondsForStay(outingStaySeconds)));
-        } else {
-          note.push("외출 시간 필요");
-        }
-      }
-
       const pmsMinutes = isOfficialHolidayWork
         ? 0
         : Math.max(0, roundedWorkMinutes - requestMinutes - outingAttendanceMinutes);
-      const requestEndSeconds = requestMinutes > 0 ? floorSecondsToStep(endSeconds) : null;
       const requestApplicationMinutes = requestApplicationDurationMinutes(
         requestMinutes,
         actualOvertimeSeconds,
-        adjustmentMinutes
+        adjustmentMinutes,
+        day,
+        requestEndSeconds
       );
       const requestStartSeconds = requestMinutes > 0
         ? requestEndSeconds - requestApplicationMinutes * CONFIG.minute
@@ -1503,7 +1707,7 @@
           </td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="start" value="${day.start}" ${needsClock ? "" : "disabled"}></td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="end" value="${day.end}" ${needsClock ? "" : "disabled"}></td>
-          <td><input class="cell-input minute-input" type="text" inputmode="numeric" data-field="nonWorkMinutes" value="${day.nonWorkMinutes}" ${needsClock ? "" : "disabled"}></td>
+          <td><button class="cell-input minute-input nonwork-detail-button" type="button" data-field="nonWorkMinutes" data-nonwork-detail="true" title="${date.getMonth() + 1}/${date.getDate()} 비업무시간 내역 입력" ${needsClock ? "" : "disabled"}>${day.nonWorkMinutes}</button></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
           <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
           <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
@@ -1515,12 +1719,166 @@
           <td><span class="output">${result.requestEnd || "-"}</span></td>
           <td><span class="output">${formatMinutes(result.pmsMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.overtimePmsMinutes)}</span></td>
-          <td><span class="output">${formatMinutes(result.attendanceMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.specialMinutes)}</span></td>
+          <td><span class="output">${formatMinutes(result.attendanceMinutes)}</span></td>
           <td><span class="muted">${result.note.join(", ")}</span></td>
         `;
         rowsEl.appendChild(tr);
       });
+    }
+
+    function cleanNonWorkDetails(details) {
+      return details
+        .map((detail) => ({
+          date: detail.date || "",
+          out: normalizeTimeText(detail.out),
+          in: normalizeTimeText(detail.in),
+          minutes: parseMinuteText(detail.minutes)
+        }))
+        .filter((detail) => detail.out || detail.in || nonWorkDetailDurationMinutes(detail) > 0);
+    }
+
+    function nonWorkDraftTotalMinutes() {
+      return state.nonWorkDraft.reduce((sum, detail) => sum + nonWorkDetailDurationMinutes(detail), 0);
+    }
+
+    function renderNonWorkModal() {
+      const isWeekMode = state.nonWorkModalMode === "week";
+      const day = state.days[state.nonWorkModalDayIndex];
+      if (!isWeekMode && !day) return;
+      if (isWeekMode) {
+        nonWorkModalTitle.textContent = "주간 비업무시간 상세";
+        nonWorkDetailHead.innerHTML = `
+          <tr>
+            <th>날짜</th>
+            <th>출문 시간</th>
+            <th>입문 시간</th>
+            <th>비업무시간</th>
+            <th></th>
+          </tr>
+        `;
+        nonWorkDetailTotalLabel.colSpan = 3;
+      } else {
+        const date = parseDateValue(day.date);
+        nonWorkModalTitle.textContent = `비업무시간 상세 ${date.getMonth() + 1}/${date.getDate()}(${CONFIG.weekdays[date.getDay()]})`;
+        nonWorkDetailHead.innerHTML = `
+          <tr>
+            <th>출문 시간</th>
+            <th>입문 시간</th>
+            <th>비업무시간</th>
+            <th></th>
+          </tr>
+        `;
+        nonWorkDetailTotalLabel.colSpan = 2;
+      }
+      nonWorkDetailRows.innerHTML = state.nonWorkDraft.map((detail, index) => `
+        <tr data-detail-index="${index}">
+          ${isWeekMode ? `<td><input class="cell-input" type="text" inputmode="numeric" data-detail-field="date" value="${detail.date || ""}"></td>` : ""}
+          <td><input class="cell-input" type="text" inputmode="numeric" data-detail-field="out" value="${detail.out || ""}"></td>
+          <td><input class="cell-input" type="text" inputmode="numeric" data-detail-field="in" value="${detail.in || ""}"></td>
+          <td><input class="cell-input minute-input" type="text" inputmode="numeric" data-detail-field="minutes" value="${detail.minutes || ""}"></td>
+          <td><button class="icon-button" type="button" data-detail-remove="${index}" aria-label="행 삭제">×</button></td>
+        </tr>
+      `).join("");
+      nonWorkDetailTotal.textContent = formatMinutes(nonWorkDraftTotalMinutes());
+    }
+
+    function openNonWorkModal(index) {
+      const day = state.days[index];
+      if (!day) return;
+      state.nonWorkModalMode = "day";
+      state.nonWorkModalDayIndex = index;
+      state.nonWorkDraft = Array.isArray(day.nonWorkDetails) && day.nonWorkDetails.length
+        ? day.nonWorkDetails.map((detail) => ({ ...detail }))
+        : [{ date: "", out: "", in: "", minutes: "" }];
+      renderNonWorkModal();
+      nonWorkModal.classList.remove("hidden");
+    }
+
+    function openWeekNonWorkModal() {
+      state.nonWorkModalMode = "week";
+      state.nonWorkModalDayIndex = null;
+      state.nonWorkDraft = state.days.flatMap((day) => {
+        const date = parseDateValue(day.date);
+        const label = `${date.getMonth() + 1}/${date.getDate()}`;
+        return Array.isArray(day.nonWorkDetails) && day.nonWorkDetails.length
+          ? day.nonWorkDetails.map((detail) => ({ ...detail, date: label }))
+          : [];
+      });
+      if (!state.nonWorkDraft.length) state.nonWorkDraft = [{ date: "", out: "", in: "", minutes: "" }];
+      renderNonWorkModal();
+      nonWorkModal.classList.remove("hidden");
+    }
+
+    function closeNonWorkModal() {
+      nonWorkModal.classList.add("hidden");
+      state.nonWorkModalDayIndex = null;
+      state.nonWorkDraft = [];
+      state.nonWorkModalMode = "day";
+    }
+
+    function applyNonWorkDetails() {
+      if (state.nonWorkModalMode === "week") {
+        const detailsByDay = Array.from({ length: 7 }, () => []);
+        cleanNonWorkDetails(state.nonWorkDraft).forEach((detail) => {
+          const dayIndex = dayIndexFromDetailDate(detail.date);
+          if (dayIndex >= 0) detailsByDay[dayIndex].push({
+            out: detail.out,
+            in: detail.in,
+            minutes: detail.minutes
+          });
+        });
+        state.days.forEach((day, index) => {
+          day.nonWorkDetails = detailsByDay[index];
+          day.nonWorkMinutes = detailsByDay[index].reduce((sum, detail) => sum + nonWorkDetailDurationMinutes(detail), 0);
+        });
+        state.optimizedMinutes = Array(7).fill(null);
+        closeNonWorkModal();
+        render();
+        return;
+      }
+      const day = state.days[state.nonWorkModalDayIndex];
+      if (!day) return;
+      const details = cleanNonWorkDetails(state.nonWorkDraft);
+      day.nonWorkDetails = details;
+      day.nonWorkMinutes = details.reduce((sum, detail) => sum + nonWorkDetailDurationMinutes(detail), 0);
+      state.optimizedMinutes = Array(7).fill(null);
+      closeNonWorkModal();
+      render();
+    }
+
+    function applyPastedNonWorkDetails(startIndex, startField, text) {
+      const fields = state.nonWorkModalMode === "week"
+        ? ["date", "out", "in", "minutes"]
+        : ["out", "in", "minutes"];
+      const startFieldIndex = fields.indexOf(startField);
+      if (startFieldIndex < 0) return false;
+      const rows = text
+        .trim()
+        .split(/\r?\n/)
+        .map((line) => line.split("\t").map((cell) => cell.trim()));
+      if (!rows.length || !rows[0].length) return false;
+
+      rows.forEach((row, rowOffset) => {
+        const detailIndex = startIndex + rowOffset;
+        while (state.nonWorkDraft.length <= detailIndex) {
+          state.nonWorkDraft.push({ out: "", in: "", minutes: "" });
+        }
+        row.forEach((rawValue, columnOffset) => {
+          const field = fields[startFieldIndex + columnOffset];
+          if (!field) return;
+          if (field === "minutes") {
+            state.nonWorkDraft[detailIndex][field] = parsePastedMinuteText(rawValue, "nonWorkMinutes");
+          } else if (field === "date") {
+            state.nonWorkDraft[detailIndex][field] = rawValue;
+          } else {
+            state.nonWorkDraft[detailIndex][field] = normalizeTimeText(rawValue);
+          }
+        });
+      });
+
+      renderNonWorkModal();
+      return true;
     }
 
     function isHolidayWithoutSpecialWork(result) {
@@ -1555,8 +1913,8 @@
       const kinds = [
         { key: "pmsMinutes", label: "근무", distribution: "work" },
         { key: "overtimePmsMinutes", label: "잔근", distribution: "assign" },
-        { key: "attendanceMinutes", label: "근태", distribution: "assign" },
-        { key: "specialMinutes", label: "특근", distribution: "assign" }
+        { key: "specialMinutes", label: "특근", distribution: "assign" },
+        { key: "attendanceMinutes", label: "근태", distribution: "assign" }
       ];
 
       pmsRowsEl.innerHTML = Array.from({ length: projectCount }, (_, projectIndex) => {
@@ -1609,7 +1967,7 @@
         <tr>
           <td class="pms-project-head">참여율 합계</td>
           <td class="pms-kind-head"><span class="${totalRate === 100 ? "good" : "warn"}">${totalRate}%</span></td>
-          <td class="pms-date-cell" colspan="7">주간 근무 목표: ${formatMinutes(week.targetMinutes)} / 입력 가능 PMS 근무: ${formatMinutes(kindTotals[0])}, 잔근 ${formatMinutes(kindTotals[1])}, 근태 ${formatMinutes(kindTotals[2])}, 특근 ${formatMinutes(kindTotals[3])}</td>
+          <td class="pms-date-cell" colspan="7">주간 근무 목표: ${formatMinutes(week.targetMinutes)} / 입력 가능 PMS 근무: ${formatMinutes(kindTotals[0])}, 잔근 ${formatMinutes(kindTotals[1])}, 특근 ${formatMinutes(kindTotals[2])}, 근태 ${formatMinutes(kindTotals[3])}</td>
           <td class="pms-total-cell"></td>
         </tr>
       `;
@@ -1704,6 +2062,7 @@
           day.start = value === "출장" ? "09:00" : "";
           day.end = value === "출장" ? "18:00" : "";
           day.nonWorkMinutes = 0;
+          day.nonWorkDetails = [];
           day.outingStart = "";
           day.outingEnd = "";
           day.adjustmentMinutes = 0;
@@ -1716,9 +2075,10 @@
           day.start = "08:00";
           day.end = "18:00";
         }
-      } else if (isMinuteInputField(field)) {
-        day[field] = parseMinuteText(value);
-      } else {
+    } else if (isMinuteInputField(field)) {
+      day[field] = parseMinuteText(value);
+      if (field === "nonWorkMinutes") day.nonWorkDetails = [];
+    } else {
         day[field] = value;
       }
       state.optimizedMinutes = Array(7).fill(null);
@@ -1764,7 +2124,8 @@
           if (field === "start" || field === "end" || field === "outingStart" || field === "outingEnd") {
             day[field] = normalizeTimeText(value);
           } else if (isMinuteInputField(field)) {
-            day[field] = parseMinuteText(value);
+            day[field] = parsePastedMinuteText(value, field);
+            if (field === "nonWorkMinutes") day.nonWorkDetails = [];
           }
         });
         if ((row[0] || row[1]) && day.workType === "휴일" && (startField === "start" || startField === "end")) {
@@ -1794,6 +2155,7 @@
         start: item[1],
         end: item[2],
         nonWorkMinutes: item[3],
+        nonWorkDetails: [],
         outingStart: item[4],
         outingEnd: item[5],
         adjustmentMinutes: item[6]
@@ -1805,14 +2167,23 @@
     rowsEl.addEventListener("input", (event) => {
       const target = event.target;
       if (!target.dataset.field) return;
+      if (target.dataset.nonworkDetail) return;
       if (target.tagName === "SELECT") return;
       const index = Number(target.closest("tr").dataset.index);
       setFieldValue(index, target.dataset.field, target.value);
     });
 
+    rowsEl.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-nonwork-detail]");
+      if (!target || target.disabled) return;
+      const index = Number(target.closest("tr").dataset.index);
+      openNonWorkModal(index);
+    });
+
     rowsEl.addEventListener("change", (event) => {
       const target = event.target;
       if (!target.dataset.field) return;
+      if (target.dataset.nonworkDetail) return;
       const index = Number(target.closest("tr").dataset.index);
       updateField(index, target.dataset.field, target.value);
     });
@@ -1826,6 +2197,63 @@
       if (applyPastedGrid(index, target.dataset.field, text)) {
         event.preventDefault();
       }
+    });
+
+    document.querySelector("[data-week-nonwork-detail]").addEventListener("click", openWeekNonWorkModal);
+
+    nonWorkAddButton.addEventListener("click", () => {
+      state.nonWorkDraft.push({ date: "", out: "", in: "", minutes: "" });
+      renderNonWorkModal();
+    });
+
+    nonWorkDetailRows.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!target.dataset.detailField) return;
+      const row = target.closest("tr");
+      const index = Number(row.dataset.detailIndex);
+      state.nonWorkDraft[index][target.dataset.detailField] = target.value;
+      nonWorkDetailTotal.textContent = formatMinutes(nonWorkDraftTotalMinutes());
+    });
+
+    nonWorkDetailRows.addEventListener("change", (event) => {
+      const target = event.target;
+      if (!target.dataset.detailField) return;
+      const row = target.closest("tr");
+      const index = Number(row.dataset.detailIndex);
+      state.nonWorkDraft[index][target.dataset.detailField] = target.dataset.detailField === "minutes"
+        ? parseMinuteText(target.value)
+        : target.dataset.detailField === "date"
+          ? target.value
+        : normalizeTimeText(target.value);
+      renderNonWorkModal();
+    });
+
+    nonWorkDetailRows.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-detail-remove]");
+      if (!target) return;
+      const index = Number(target.dataset.detailRemove);
+      state.nonWorkDraft.splice(index, 1);
+      if (!state.nonWorkDraft.length) state.nonWorkDraft.push({ date: "", out: "", in: "", minutes: "" });
+      renderNonWorkModal();
+    });
+
+    nonWorkDetailRows.addEventListener("paste", (event) => {
+      const target = event.target;
+      if (!target.dataset.detailField) return;
+      const text = event.clipboardData?.getData("text/plain") || "";
+      if (!text.includes("\t") && !text.includes("\n")) return;
+      const row = target.closest("tr");
+      const index = Number(row.dataset.detailIndex);
+      if (applyPastedNonWorkDetails(index, target.dataset.detailField, text)) {
+        event.preventDefault();
+      }
+    });
+
+    nonWorkApplyButton.addEventListener("click", applyNonWorkDetails);
+    nonWorkCancelButton.addEventListener("click", closeNonWorkModal);
+    nonWorkCloseButton.addEventListener("click", closeNonWorkModal);
+    nonWorkModal.addEventListener("click", (event) => {
+      if (event.target === nonWorkModal) closeNonWorkModal();
     });
 
     weekStartEl.addEventListener("change", () => {
