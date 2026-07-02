@@ -356,13 +356,13 @@
       background: #f7f3ff;
     }
 
-    .work-table th:nth-child(n+15):nth-child(-n+18),
-    .work-table tbody td:nth-child(n+15):nth-child(-n+18) {
+    .work-table th:nth-child(n+15):nth-child(-n+19),
+    .work-table tbody td:nth-child(n+15):nth-child(-n+19) {
       background: #eefaf5;
     }
 
-    .work-table th:nth-child(19),
-    .work-table tbody td:nth-child(19) {
+    .work-table th:nth-child(20),
+    .work-table tbody td:nth-child(20) {
       background: #fff;
     }
 
@@ -376,8 +376,8 @@
     .work-table tbody td:nth-child(13),
     .work-table th:nth-child(15),
     .work-table tbody td:nth-child(15),
-    .work-table th:nth-child(19),
-    .work-table tbody td:nth-child(19) {
+    .work-table th:nth-child(20),
+    .work-table tbody td:nth-child(20) {
       border-left: 2px solid #95a3b5;
     }
 
@@ -401,7 +401,7 @@
       background: #eee7ff;
     }
 
-    .work-table th:nth-child(n+15):nth-child(-n+18) {
+    .work-table th:nth-child(n+15):nth-child(-n+19) {
       background: #ddf3e8;
     }
 
@@ -425,6 +425,13 @@
 
     td.short-overtime-cell {
       background: #fff4e5;
+    }
+
+    .outing-time.outing-warning {
+      border-color: #ef9a9a;
+      background: #fff1f2 !important;
+      color: var(--red);
+      font-weight: 750;
     }
 
     td.adjusted-overtime-cell {
@@ -458,6 +465,20 @@
     .minute-input {
       text-align: right;
       font-variant-numeric: tabular-nums;
+    }
+
+    .outing-start-cell {
+      display: grid;
+      grid-template-columns: 14px 1fr;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .outing-start-cell input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      min-width: 0;
+      margin: 0;
     }
 
     .project-cell {
@@ -774,12 +795,12 @@
       <div class="title-group">
         <div class="title-line">
           <h1>PMS Work Time & Overtime Planner</h1>
-          <span class="version-stamp">마지막 수정 2026-06-30 01:43</span>
+          <span class="version-stamp">마지막 수정 2026-07-03 00:37</span>
         </div>
         <div class="subtitle">
           <span>HARU 근태 기준으로 PMS 입력 가능 공수와 잔근 신청 시간을 계산합니다.</span>
           <span>HARU 근태/주차별출퇴근현황에서 인정 출근시간, 인정 퇴근시간, 비업무시간을 복사/붙여넣기 합니다.</span>
-          <span>잔근 신청 시간대에 비업무시간이 있으면 비업무시간 열 제목이나 각 날짜의 비업무시간 칸을 클릭해 상세 내역을 입력해야 잔근 신청 내역에 정확히 반영됩니다.</span>
+          <span>잔근/특근 신청 시간대에 비업무시간이 있으면 비업무시간 열 제목이나 각 날짜의 비업무시간 칸을 클릭해 상세 내역을 입력해야 신청 내역에 정확히 반영됩니다.</span>
         </div>
       </div>
       <div class="toolbar">
@@ -805,7 +826,7 @@
           <col style="width: 68px">
           <col style="width: 68px">
           <col style="width: 59px">
-          <col style="width: 68px">
+          <col style="width: 86px">
           <col style="width: 68px">
           <col style="width: 72px">
           <col style="width: 72px">
@@ -818,29 +839,31 @@
           <col style="width: 68px">
           <col style="width: 68px">
           <col style="width: 68px">
+          <col style="width: 68px">
           <col style="width: 144px">
         </colgroup>
         <thead>
           <tr>
-            <th><span class="th-title">일자 <span class="th-help" tabindex="0" data-help="주 시작일을 기준으로 자동 표시되는 날짜입니다.">?</span></span><span class="th-unit">[월/일]</span></th>
-            <th><span class="th-title">근태 <span class="th-help" tabindex="0" data-help="출근, 외출, 출장, 휴가, 휴일, 특근 중 하나를 선택합니다.">?</span></span><span class="th-unit">[구분]</span></th>
-            <th><span class="th-title">인정<br>출근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 출근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">인정<br>퇴근시간 <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 퇴근시간을 24시간 형식으로 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title"><button class="header-action" type="button" data-week-nonwork-detail="true" title="주간 전체 비업무시간 내역 입력">비업무<br>시간</button> <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다. 제목을 클릭하면 한 주간 비업무시간 상세 내역을 날짜별로 입력할 수 있습니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">외출<br>시작시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 시작시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">외출<br>종료시간 <span class="th-help" tabindex="0" data-help="외출 근태가 있을 때 인정 외출 종료시간을 입력합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">체류시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">실제<br>잔근 시간 <span class="th-help" tabindex="0" data-help="인정 체류가 9시간을 넘는 부분입니다. 잔근 신청 가능 시간 계산의 출발점입니다.">?</span></span><span class="th-unit">[시:분:초]</span></th>
-            <th><span class="th-title">잔근<br>보정 <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이 계산 결과보다 작거나 다르거나 수동 시뮬레이션이 필요한 경우, 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>조정 <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 근무 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근<br>신청 <span class="th-help" tabindex="0" data-help="최종 잔근 신청 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 근무 조건에 따른 잔근 조정을 반영합니다. 잔근 신청 후 PMS 근무+근태가 480분 이상 남도록 제한하며, 이후 10분 단위, 최소 1시간, 법정 휴게시간(4시간마다 30분, 최대 5회) 차감을 적용합니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">잔근 신청<br>시작 시간 <span class="th-help" tabindex="0" data-help="잔근 신청 시간을 기준으로 계산된 잔근 신청 시작 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
-            <th><span class="th-title">잔근 신청<br>종료 시간 <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span><span class="th-unit">[시:분]</span></th>
-            <th><span class="th-title">PMS<br>근무 <span class="th-help" tabindex="0" data-help="PMS에 근무 공수로 입력 가능한 분입니다. 체류시간에서 잔근 신청 시간과 PMS 근태 시간을 뺀 값입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">PMS<br>잔근 <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 신청 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">PMS<br>특근 <span class="th-help" tabindex="0" data-help="휴일 특근으로 PMS에 입력할 인정 특근 시간입니다. 인정 출근시간은 다음 10분 단위로 올림하고 인정 퇴근시간은 10분 단위로 내린 신청 구간을 기준으로 계산합니다. 4시간마다 휴게시간 30분을 반영하며, 인정 시간이 최소 240분 이상일 때 신청 가능하고 최대 인정 시간은 480분입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">PMS<br>근태 <span class="th-help" tabindex="0" data-help="출장, 휴가, 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다.">?</span></span><span class="th-unit">[분]</span></th>
-            <th><span class="th-title">비고 <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span><span class="th-unit">[-]</span></th>
+            <th><span class="th-title">일자</span><span class="th-unit">[월/일] <span class="th-help" tabindex="0" data-help="주 시작일을 기준으로 자동 표시되는 날짜입니다.">?</span></span></th>
+            <th><span class="th-title">근태</span><span class="th-unit">[구분] <span class="th-help" tabindex="0" data-help="출근, 출장, 연차, 반차, 반반차, 휴일, 특근 중 하나를 선택합니다. 공가나 병가는 같은 시간의 연차/반차/반반차로 입력합니다. 외출은 외출 시작시간 칸의 체크박스로 선택합니다.">?</span></span></th>
+            <th><span class="th-title">인정<br>출근시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 출근시간을 24시간 형식으로 입력합니다.">?</span></span></th>
+            <th><span class="th-title">인정<br>퇴근시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="HARU에서 조회한 인정 퇴근시간을 입력합니다. 자정 이후 새벽 퇴근은 24:00:00~29:59:59 같은 누적 시간이나 00:00:00~05:59:59 같은 일반 시각 모두 입력할 수 있습니다. 일반 시각으로 입력한 새벽 퇴근값은 계산 시 자동으로 24시간을 더합니다.">?</span></span></th>
+            <th><span class="th-title"><button class="header-action" type="button" data-week-nonwork-detail="true" title="주간 전체 비업무시간 내역 입력">비업무<br>시간</button></span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="근무 중 업무로 인정되지 않는 시간을 분 단위로 입력합니다. 제목을 클릭하면 한 주간 비업무시간 상세 내역을 날짜별로 입력할 수 있습니다.">?</span></span></th>
+            <th><span class="th-title">외출<br>시작시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="외출 체크를 켠 날에 외출 시작시간을 입력합니다. 외출 시간은 PMS 근무에서 빠지고 PMS 근태로 계산되며, 인정 출퇴근 범위를 벗어나면 경고 표시됩니다.">?</span></span></th>
+            <th><span class="th-title">외출<br>종료시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="외출 체크를 켠 날에 외출 종료시간을 입력합니다. 외출 시간은 PMS 근무에서 빠지고 PMS 근태로 계산되며, 인정 출퇴근 범위를 벗어나면 경고 표시됩니다.">?</span></span></th>
+            <th><span class="th-title">체류시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="인정 퇴근시간에서 인정 출근시간, 비업무시간, 휴게시간을 뺀 전체 업무시간입니다. 잔근 시간도 포함합니다.">?</span></span></th>
+            <th><span class="th-title">실제<br>잔근 시간</span><span class="th-unit">[시:분:초] <span class="th-help" tabindex="0" data-help="출근일은 인정 출퇴근 간격이 9시간을 넘는 부분이 출발점입니다. 간접근무가 있는 날은 직접 근무 기준 시간과 그 구간의 휴게시간을 뺀 나머지입니다. 반차는 4시간 30분, 반반차는 6시간 30분을 넘는 부분이 출발점입니다.">?</span></span></th>
+            <th><span class="th-title">잔근<br>보정</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="이미 신청한 잔근이 계산 결과보다 작거나 다르거나 수동 시뮬레이션이 필요한 경우, 잔근 시간에서 차감할 시간을 입력합니다.">?</span></span></th>
+            <th><span class="th-title">잔근<br>조정</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="자동 최적화로 줄어든 잔근 시간입니다. 먼저 주 720분 한도 안에서 잔근 합계를 최대화하고, 한도 초과분은 잔근 시간이 큰 날을 최대한 보존하도록 잔근 시간이 적은 날부터 우선 차감합니다. 이후 PMS 공수 부족이 남으면 부족 해소에 효과적인 순서로 추가 차감합니다.">?</span></span></th>
+            <th><span class="th-title">잔근<br>인정 시간</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="최종 잔근 인정 시간입니다. 실제 잔근 시간에서 잔근 보정을 먼저 차감하고, 잔근 자동 최적화 시 주 720분 한도와 PMS 공수 조건에 따른 잔근 조정을 반영합니다. 잔근 인정 후 PMS 근무+근태+간접근무가 480분 이상 남도록 제한하며, 이후 10분 단위, 최소 1시간, 법정 휴게시간 차감을 적용합니다.">?</span></span></th>
+            <th><span class="th-title">잔근 신청<br>시작 시간</span><span class="th-unit">[시:분] <span class="th-help" tabindex="0" data-help="잔근 신청 종료 시간을 기준으로 역산한 신청 시작 시각입니다. 신청 구간에 비업무 상세 내역이 겹치면 그 차감분을 반영하기 위해 시작 시간이 더 앞당겨질 수 있습니다.">?</span></span></th>
+            <th><span class="th-title">잔근 신청<br>종료 시간</span><span class="th-unit">[시:분] <span class="th-help" tabindex="0" data-help="인정 퇴근시간 이하에서 10분 단위로 내림한 잔근 신청 종료 시각입니다.">?</span></span></th>
+            <th><span class="th-title">PMS<br>근무</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="PMS에 근무 공수로 입력 가능한 분입니다. 체류시간에서 잔근 인정 시간과 외출 PMS 근태를 뺀 값이며, 연차/반차/반반차의 간접근무는 별도 열로 계산합니다.">?</span></span></th>
+            <th><span class="th-title">PMS<br>잔근</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="PMS에 잔근으로 입력할 잔근 인정 시간입니다.">?</span></span></th>
+            <th><span class="th-title">PMS<br>특근</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="휴일 특근으로 PMS에 입력할 인정 특근 시간입니다. 인정 출근시간은 다음 10분 단위로 올림하고 인정 퇴근시간은 10분 단위로 내린 신청 구간을 기준으로 계산합니다. 총 신청 구간이 4시간 30분 이상이어야 휴게 30분 차감 후 인정 240분을 받을 수 있고, 최대 인정 시간은 480분입니다.">?</span></span></th>
+            <th><span class="th-title">PMS<br>근태</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="출장 또는 외출처럼 PMS 근태 항목에 입력해야 하는 인정 시간입니다. 외출 체크가 켜진 날은 외출 시간만큼 PMS 근무에서 빠지고 PMS 근태로 계산됩니다.">?</span></span></th>
+            <th><span class="th-title">PMS<br>간접 근무</span><span class="th-unit">[분] <span class="th-help" tabindex="0" data-help="연차, 반차, 반반차처럼 PMS 간접 근무로 입력해야 하는 시간입니다. 연차는 480분, 반차는 240분, 반반차는 120분으로 계산합니다.">?</span></span></th>
+            <th><span class="th-title">비고</span><span class="th-unit">[-] <span class="th-help" tabindex="0" data-help="해당 행 계산에 필요한 참고 사항이나 미정 규칙을 표시합니다.">?</span></span></th>
           </tr>
         </thead>
         <tbody id="rows"></tbody>
@@ -858,6 +881,7 @@
             <td><span id="tablePmsOvertimeTotal" class="output">0분</span></td>
             <td><span id="tableSpecialTotal" class="output">0분</span></td>
             <td><span id="tableAttendanceTotal" class="output">0분</span></td>
+            <td><span id="tableIndirectWorkTotal" class="output">0분</span></td>
             <td><span id="tableLimitNote" class="muted">잔근 한도 12시간</span></td>
           </tr>
         </tfoot>
@@ -867,7 +891,7 @@
     <section class="table-shell pms-shell" aria-label="PMS 입력 계산표">
       <div class="section-title">
         <h2>PMS 입력 계산</h2>
-        <span>프로젝트 수에 맞춰 PMS 근무 입력량을 나눠 보기 위한 영역입니다.</span>
+        <span>프로젝트별 PMS 근무 배분과 근태/잔근/특근 배정, 공통 간접근무 입력값을 확인하는 영역입니다.</span>
       </div>
       <table class="pms-table">
         <thead id="pmsHead"></thead>
@@ -884,7 +908,7 @@
         <div id="targetMetric" class="metric-value">0:00</div>
       </div>
       <div class="metric">
-        <div class="metric-label">주간 근무시간</div>
+        <div class="metric-label">주간 근무시간(근무+근태+간접)</div>
         <div id="workMetric" class="metric-value">0:00</div>
       </div>
       <div class="metric">
@@ -892,24 +916,24 @@
         <div id="overtimeMetric" class="metric-value">0분</div>
       </div>
       <div class="metric">
-        <div class="metric-label">PMS 근무+근태</div>
+        <div class="metric-label">PMS 근무+근태+간접</div>
         <div id="pmsMetric" class="metric-value">0분</div>
       </div>
       <div class="metric">
-        <div class="metric-label">PMS 근무 부족</div>
+        <div class="metric-label">PMS 공수 부족</div>
         <div id="shortageMetric" class="metric-value">0분</div>
       </div>
     </div>
     <div class="summary-bottom">
       <div id="message" class="message"></div>
       <div class="legend">
-        <span class="pill">PMS 부족 판정 = PMS 근무 합계</span>
-        <span class="pill">잔근은 PMS 부족 0 범위에서 최대화</span>
+        <span class="pill">PMS 공수 부족 판정 = PMS 근무+근태+간접근무</span>
+        <span class="pill">잔근은 PMS 공수 부족 0 범위에서 최대화</span>
         <span class="pill">720분 초과분은 작은 잔근일부터 우선 차감</span>
         <span class="pill">큰 잔근일은 최대한 보존</span>
-        <span class="pill">특근 신청: 최소 240분, 인정 최대 480분</span>
+        <span class="pill">특근 신청: 신청 구간 4시간 30분 이상, 인정 240~480분</span>
         <span class="pill">연한 빨강: 체류시간 8시간 미만</span>
-        <span class="pill">연한 주황: 잔근 신청 1시간 미만</span>
+        <span class="pill">연한 주황: 실제 잔근 1시간 미만</span>
       </div>
     </div>
   </section>
@@ -969,7 +993,13 @@
       holidayCountryCode: "KR",
       holidayApiBase: "https://date.nager.at/api/v3/PublicHolidays",
       weekdays: ["일", "월", "화", "수", "목", "금", "토"],
-      workTypes: ["출근", "외출", "출장", "휴가", "휴일", "특근"]
+      workTypes: ["출근", "출장", "연차", "반차", "반반차", "휴일", "특근"],
+      indirectWorkMinutesByType: {
+        "연차": 480,
+        "휴가": 480,
+        "반차": 240,
+        "반반차": 120
+      }
     };
 
     const state = {
@@ -1024,6 +1054,7 @@
     const tablePmsOvertimeTotal = document.querySelector("#tablePmsOvertimeTotal");
     const tableAttendanceTotal = document.querySelector("#tableAttendanceTotal");
     const tableSpecialTotal = document.querySelector("#tableSpecialTotal");
+    const tableIndirectWorkTotal = document.querySelector("#tableIndirectWorkTotal");
     const tableShortageTotal = document.querySelector("#tableShortageTotal");
     const tableLimitNote = document.querySelector("#tableLimitNote");
 
@@ -1060,14 +1091,25 @@
       const parts = value.split(":").map(Number);
       if (parts.length < 2 || parts.some(Number.isNaN)) return null;
       const [hours, minutes, seconds = 0] = parts;
+      if (hours < 0 || hours > 29 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) return null;
       return hours * CONFIG.hour + minutes * CONFIG.minute + seconds;
+    }
+
+    function parseEndTimeToSeconds(value) {
+      const seconds = parseTimeToSeconds(value);
+      if (seconds == null) return null;
+      return seconds < 6 * CONFIG.hour ? seconds + 24 * CONFIG.hour : seconds;
+    }
+
+    function parseWorkdayTimeToSeconds(value) {
+      return parseEndTimeToSeconds(value);
     }
 
     function secondsToTimeInput(seconds) {
       if (seconds == null || !Number.isFinite(seconds)) return "";
-      const normalized = ((Math.round(seconds) % 86400) + 86400) % 86400;
-      const hours = Math.floor(normalized / CONFIG.hour);
-      const minutes = Math.floor((normalized % CONFIG.hour) / CONFIG.minute);
+      const rounded = Math.max(0, Math.round(seconds));
+      const hours = Math.floor(rounded / CONFIG.hour);
+      const minutes = Math.floor((rounded % CONFIG.hour) / CONFIG.minute);
       return `${pad2(hours)}:${pad2(minutes)}`;
     }
 
@@ -1109,6 +1151,26 @@
 
     function isMinuteInputField(field) {
       return field === "nonWorkMinutes" || field === "adjustmentMinutes";
+    }
+
+    function isClockWorkType(type) {
+      return type === "출근" || type === "반차" || type === "반반차" || type === "특근";
+    }
+
+    function canUseOuting(day) {
+      return day.workType === "출근" || day.workType === "반차" || day.workType === "반반차";
+    }
+
+    function indirectWorkMinutesForType(type) {
+      return CONFIG.indirectWorkMinutesByType[type] || 0;
+    }
+
+    function isLeaveWorkType(type) {
+      return type === "연차" || type === "휴가" || type === "반차" || type === "반반차";
+    }
+
+    function isLeaveBlockedDay(day, index) {
+      return isWeekendIndex(index) || Boolean(holidayNameForDate(day.date));
     }
 
     function clampProjectCount(value) {
@@ -1154,10 +1216,10 @@
 
     function buildWorkAllocations(week, projectCount) {
       const dailyRemaining = week.days.map((result) => result.pmsMinutes);
-      const dailyCurrent = week.days.map((result) => result.attendanceMinutes);
+      const dailyCurrent = week.days.map((result) => result.attendanceMinutes + result.indirectWorkMinutes);
       const allocations = Array.from({ length: projectCount }, () => Array(7).fill(0));
       const projectRemaining = Array.from({ length: projectCount }, (_, projectIndex) => {
-        const weeklyTarget = applyRate(week.targetMinutes, state.projectRates[projectIndex] ?? 0);
+        const weeklyTarget = applyRate(Math.max(0, week.targetMinutes - week.indirectWorkMinutes), state.projectRates[projectIndex] ?? 0);
         const assignedAttendance = assignedProjectTotal(week, "attendanceMinutes", projectIndex);
         return Math.max(0, weeklyTarget - assignedAttendance);
       });
@@ -1186,10 +1248,12 @@
           .filter((item) => item.minutes > 0);
         if (!candidates.length) return -1;
         candidates.sort((a, b) => {
-          const remainingDiff = b.minutes - a.minutes;
-          if (remainingDiff !== 0) return remainingDiff;
+          const rateDiff = (state.projectRates[a.projectIndex] ?? 0) - (state.projectRates[b.projectIndex] ?? 0);
+          if (rateDiff !== 0) return rateDiff;
           const dayLoadDiff = allocations[a.projectIndex][dayIndex] - allocations[b.projectIndex][dayIndex];
           if (dayLoadDiff !== 0) return dayLoadDiff;
+          const remainingDiff = b.minutes - a.minutes;
+          if (remainingDiff !== 0) return remainingDiff;
           return a.projectIndex - b.projectIndex;
         });
         return candidates[0].projectIndex;
@@ -1285,8 +1349,8 @@
     function nonWorkDetailOverlapMinutes(day, startSeconds, endSeconds) {
       if (!Array.isArray(day.nonWorkDetails) || startSeconds == null || endSeconds == null || endSeconds <= startSeconds) return 0;
       return day.nonWorkDetails.reduce((sum, detail) => {
-        const outSeconds = parseTimeToSeconds(detail.out);
-        const inSeconds = parseTimeToSeconds(detail.in);
+        const outSeconds = parseWorkdayTimeToSeconds(detail.out);
+        const inSeconds = parseWorkdayTimeToSeconds(detail.in);
         if (outSeconds == null || inSeconds == null || inSeconds <= outSeconds) return sum;
         const overlapSeconds = Math.max(0, Math.min(endSeconds, inSeconds) - Math.max(startSeconds, outSeconds));
         if (overlapSeconds <= 0) return sum;
@@ -1310,7 +1374,7 @@
       for (let minutes = maxApplicationMinutes; minutes >= 0; minutes -= CONFIG.overtimeStepMinutes) {
         const requestableMinutes = requestMinutesFromApplicationWindow(minutes, day, requestEndSeconds);
         if (requestableMinutes === requestMinutes) {
-          exactMinutes = minutes;
+          exactMinutes = Math.max(exactMinutes || 0, minutes);
         }
         if (requestableMinutes < requestMinutes && requestableMinutes > fallback.requestableMinutes) {
           fallback = { applicationMinutes: minutes, requestableMinutes };
@@ -1369,6 +1433,7 @@
         day.nonWorkMinutes = 0;
         day.outingStart = "";
         day.outingEnd = "";
+        day.outingEnabled = false;
         day.adjustmentMinutes = 0;
       });
       state.optimizedMinutes = Array(7).fill(null);
@@ -1407,6 +1472,7 @@
         end: isWeekendIndex(index) ? "" : "18:00",
         nonWorkMinutes: 0,
         nonWorkDetails: [],
+        outingEnabled: false,
         outingStart: "",
         outingEnd: "",
         adjustmentMinutes: 0
@@ -1426,13 +1492,14 @@
 
     function calculateDay(day, index, overrideRequestMinutes = null) {
       const startSeconds = parseTimeToSeconds(day.start);
-      const endSeconds = parseTimeToSeconds(day.end);
+      const endSeconds = parseEndTimeToSeconds(day.end);
       const nonWorkSeconds = Math.max(0, Number(day.nonWorkMinutes) || 0) * CONFIG.minute;
       const adjustmentMinutes = Math.max(0, Number(day.adjustmentMinutes) || 0);
       const note = [];
       const holidayName = holidayNameForDate(day.date);
       if (holidayName) note.push(`공휴일: ${holidayName}`);
-      const isOfficialHolidayWork = Boolean(holidayName) && (day.workType === "출근" || day.workType === "외출");
+      const isOfficialHolidayWork = Boolean(holidayName) && canUseOuting(day);
+      const indirectWorkMinutes = indirectWorkMinutesForType(day.workType);
       const base = {
         index,
         targetDay: isTargetDay(day, index),
@@ -1448,16 +1515,22 @@
         overtimePmsMinutes: 0,
         attendanceMinutes: 0,
         specialMinutes: 0,
+        indirectWorkMinutes,
         shortageImpactMinutes: 0,
         note
       };
 
-      if (day.workType === "출장" || day.workType === "휴가") {
+      if (day.workType === "출장") {
         base.workSeconds = CONFIG.regularMinutes * CONFIG.minute;
         base.roundedWorkMinutes = CONFIG.regularMinutes;
         base.pmsMinutes = 0;
         base.attendanceMinutes = CONFIG.regularMinutes;
-        note.push(day.workType === "출장" ? "출장 8시간 고정" : "휴가 8시간 고정");
+        note.push("출장 8시간 고정");
+        return base;
+      }
+
+      if (day.workType === "연차" || day.workType === "휴가") {
+        note.push("연차 간접 근무 480분");
         return base;
       }
 
@@ -1472,21 +1545,32 @@
       }
 
       const staySeconds = Math.max(0, endSeconds - startSeconds - nonWorkSeconds);
+      const rawStaySeconds = Math.max(0, endSeconds - startSeconds);
       const breakSeconds = breakSecondsForStay(staySeconds);
       const workSeconds = Math.max(0, staySeconds - breakSeconds);
       const roundedWorkMinutes = roundPmsMinutes(workSeconds);
+      const directWorkTargetMinutes = Math.max(0, CONFIG.regularMinutes - indirectWorkMinutes);
+      const indirectDayOvertimeBaseSeconds = directWorkTargetMinutes * CONFIG.minute
+        + breakSecondsForStay(directWorkTargetMinutes * CONFIG.minute);
       const actualOvertimeSeconds = isOfficialHolidayWork
         ? workSeconds
-        : Math.max(
-          0,
-          endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds
-        );
+        : indirectWorkMinutes > 0
+          ? Math.max(0, staySeconds - indirectDayOvertimeBaseSeconds)
+          : Math.max(0, endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour - nonWorkSeconds);
+      const overtimeApplicationWindowSeconds = isOfficialHolidayWork
+        ? rawStaySeconds
+        : indirectWorkMinutes > 0
+          ? Math.max(0, rawStaySeconds - indirectDayOvertimeBaseSeconds)
+          : Math.max(0, endSeconds - startSeconds - CONFIG.overtimeBaseHours * CONFIG.hour);
 
       let outingAttendanceMinutes = 0;
-      if (day.workType === "외출") {
-        const outingStart = parseTimeToSeconds(day.outingStart);
-        const outingEnd = parseTimeToSeconds(day.outingEnd);
+      if (day.outingEnabled && canUseOuting(day)) {
+        const outingStart = parseWorkdayTimeToSeconds(day.outingStart);
+        const outingEnd = parseWorkdayTimeToSeconds(day.outingEnd);
         if (outingStart != null && outingEnd != null && outingEnd > outingStart) {
+          if (outingStart < startSeconds || outingEnd > endSeconds) {
+            note.push("경고: 외출 시간이 인정 출퇴근 범위 밖입니다");
+          }
           const outingStaySeconds = outingEnd - outingStart;
           outingAttendanceMinutes = roundPmsMinutes(Math.max(0, outingStaySeconds - breakSecondsForStay(outingStaySeconds)));
         } else {
@@ -1497,25 +1581,31 @@
       if (day.workType === "특근") {
         const specialStartSeconds = ceilSecondsToStep(startSeconds);
         const specialEndSeconds = floorSecondsToStep(endSeconds);
-        const specialApplicationSeconds = Math.max(0, specialEndSeconds - specialStartSeconds - nonWorkSeconds);
+        const specialApplicationSeconds = Math.max(0, specialEndSeconds - specialStartSeconds);
         const specialApplicationMinutes = Math.floor(specialApplicationSeconds / CONFIG.minute);
+        const specialBaseMinutes = Array.isArray(day.nonWorkDetails) && day.nonWorkDetails.length
+          ? requestMinutesFromApplicationWindow(specialApplicationMinutes, day, specialEndSeconds)
+          : requestMinutesFromApplicationDuration(Math.max(0, specialApplicationMinutes - Number(day.nonWorkMinutes || 0)));
         const specialRecognizedMinutes = Math.min(
           CONFIG.maxSpecialWorkMinutes,
-          requestMinutesFromApplicationDuration(specialApplicationMinutes)
+          specialBaseMinutes
         );
         base.workSeconds = workSeconds;
         base.roundedWorkMinutes = roundedWorkMinutes;
-        base.specialMinutes = specialApplicationMinutes >= CONFIG.minSpecialWorkMinutes ? specialRecognizedMinutes : 0;
+        base.specialMinutes = specialRecognizedMinutes >= CONFIG.minSpecialWorkMinutes ? specialRecognizedMinutes : 0;
         base.requestStart = base.specialMinutes > 0 ? secondsToTimeInput(specialStartSeconds) : "-";
         base.requestEnd = base.specialMinutes > 0 ? secondsToTimeInput(specialEndSeconds) : "-";
         return base;
       }
 
-      const requestEndSeconds = actualOvertimeSeconds > 0 ? floorSecondsToStep(endSeconds) : null;
-      const rawMaxRequestMinutes = requestableFromActual(actualOvertimeSeconds, adjustmentMinutes, day, requestEndSeconds);
+      const requestEndSeconds = overtimeApplicationWindowSeconds > 0 ? floorSecondsToStep(endSeconds) : null;
+      const rawMaxRequestMinutes = Math.min(
+        requestableFromActual(overtimeApplicationWindowSeconds, adjustmentMinutes, day, requestEndSeconds),
+        floorToStepMinutes(actualOvertimeSeconds / CONFIG.minute)
+      );
       const pmsWorkFloorRequestLimit = isOfficialHolidayWork
         ? rawMaxRequestMinutes
-        : floorToStepMinutes(Math.max(0, roundedWorkMinutes - CONFIG.regularMinutes));
+        : floorToStepMinutes(Math.max(0, roundedWorkMinutes - directWorkTargetMinutes));
       const cappedMaxRequestMinutes = isOfficialHolidayWork
         ? rawMaxRequestMinutes
         : Math.min(CONFIG.maxWeekdayOvertimeRequestMinutes, rawMaxRequestMinutes, pmsWorkFloorRequestLimit);
@@ -1531,7 +1621,7 @@
         : Math.max(0, roundedWorkMinutes - requestMinutes - outingAttendanceMinutes);
       const requestApplicationMinutes = requestApplicationDurationMinutes(
         requestMinutes,
-        actualOvertimeSeconds,
+        overtimeApplicationWindowSeconds,
         adjustmentMinutes,
         day,
         requestEndSeconds
@@ -1554,6 +1644,7 @@
       base.shortageImpactMinutes = maxRequestMinutes - requestMinutes;
       if (isOfficialHolidayWork) note.push("공휴일 근무는 잔근으로 계산");
       if (outingAttendanceMinutes > 0) note.push(`외출 근태 ${outingAttendanceMinutes}분`);
+      if (indirectWorkMinutes > 0) note.push(`${day.workType} 간접 근무 ${indirectWorkMinutes}분`);
       return base;
     }
 
@@ -1561,7 +1652,7 @@
       const days = state.days.map((day, index) => calculateDay(day, index, requestPlan ? requestPlan[index] : null));
       const targetMinutes = days.reduce((sum, result, index) => sum + (isTargetDay(state.days[index], index) ? CONFIG.regularMinutes : 0), 0);
       const workMinutes = days.reduce((sum, result) => sum + roundPmsMinutes(result.workSeconds), 0);
-      const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes + result.attendanceMinutes, 0);
+      const pmsAppliedMinutes = days.reduce((sum, result) => sum + result.pmsMinutes + result.attendanceMinutes + result.indirectWorkMinutes, 0);
       const overtimeMinutes = days.reduce((sum, result) => sum + result.overtimePmsMinutes, 0);
       const standardWorkMinutes = Math.max(0, workMinutes - overtimeMinutes);
       const actualOvertimeMinutes = roundPmsMinutes(days.reduce((sum, result) => sum + result.actualOvertimeSeconds, 0));
@@ -1569,6 +1660,7 @@
       const pmsWorkMinutes = days.reduce((sum, result) => sum + result.pmsMinutes, 0);
       const attendanceMinutes = days.reduce((sum, result) => sum + result.attendanceMinutes, 0);
       const specialMinutes = days.reduce((sum, result) => sum + result.specialMinutes, 0);
+      const indirectWorkMinutes = days.reduce((sum, result) => sum + result.indirectWorkMinutes, 0);
       const shortageImpactMinutes = days.reduce((sum, result) => sum + result.shortageImpactMinutes, 0);
       const shortageMinutes = Math.max(0, targetMinutes - pmsAppliedMinutes);
       return {
@@ -1583,6 +1675,7 @@
         adjustmentMinutes,
         attendanceMinutes,
         specialMinutes,
+        indirectWorkMinutes,
         shortageImpactMinutes,
         shortageMinutes
       };
@@ -1687,8 +1780,21 @@
         tr.className = classForWorkType(day.workType, index, result);
         tr.dataset.index = String(index);
 
-        const needsClock = day.workType === "출근" || day.workType === "외출" || day.workType === "특근";
-        const needsOuting = day.workType === "외출";
+        const needsClock = isClockWorkType(day.workType);
+        const needsOuting = Boolean(day.outingEnabled) && canUseOuting(day);
+        const canToggleOuting = canUseOuting(day);
+        const leaveBlocked = isLeaveBlockedDay(day, index);
+        const startSeconds = parseTimeToSeconds(day.start);
+        const endSeconds = parseEndTimeToSeconds(day.end);
+        const outingStartSeconds = parseWorkdayTimeToSeconds(day.outingStart);
+        const outingEndSeconds = parseWorkdayTimeToSeconds(day.outingEnd);
+        const hasOutingWarning = needsOuting
+          && startSeconds != null
+          && endSeconds != null
+          && outingStartSeconds != null
+          && outingEndSeconds != null
+          && (outingStartSeconds < startSeconds || outingEndSeconds > endSeconds || outingEndSeconds <= outingStartSeconds);
+        const outingWarningTitle = hasOutingWarning ? "외출 시간이 인정 출퇴근 범위 밖이거나 종료가 시작보다 빠릅니다. 확인하세요." : "";
         const isLowWork = needsClock && result.workSeconds > 0 && result.workSeconds < 8 * CONFIG.hour;
         const isShortOvertime = result.actualOvertimeSeconds > 0 && result.actualOvertimeSeconds < CONFIG.hour;
         const isAdjustedOvertime = state.autoOptimizeEnabled && result.shortageImpactMinutes > 0;
@@ -1702,14 +1808,19 @@
           </td>
           <td>
             <select class="cell-select" data-field="workType">
-              ${CONFIG.workTypes.map((type) => `<option value="${type}" ${day.workType === type ? "selected" : ""}>${type}</option>`).join("")}
+              ${CONFIG.workTypes.map((type) => `<option value="${type}" ${day.workType === type ? "selected" : ""} ${leaveBlocked && isLeaveWorkType(type) ? "disabled" : ""}>${type}</option>`).join("")}
             </select>
           </td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="start" value="${day.start}" ${needsClock ? "" : "disabled"}></td>
           <td><input class="cell-input" type="text" inputmode="numeric" data-field="end" value="${day.end}" ${needsClock ? "" : "disabled"}></td>
           <td><button class="cell-input minute-input nonwork-detail-button" type="button" data-field="nonWorkMinutes" data-nonwork-detail="true" title="${date.getMonth() + 1}/${date.getDate()} 비업무시간 내역 입력" ${needsClock ? "" : "disabled"}>${day.nonWorkMinutes}</button></td>
-          <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" ${needsOuting ? "" : "disabled"}></td>
-          <td><input class="cell-input outing-time" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" ${needsOuting ? "" : "disabled"}></td>
+          <td>
+            <label class="outing-start-cell">
+              <input type="checkbox" data-field="outingEnabled" ${day.outingEnabled && canToggleOuting ? "checked" : ""} ${canToggleOuting ? "" : "disabled"}>
+              <input class="cell-input outing-time ${hasOutingWarning ? "outing-warning" : ""}" type="text" inputmode="numeric" data-field="outingStart" value="${day.outingStart}" title="${outingWarningTitle}" ${needsOuting ? "" : "disabled"}>
+            </label>
+          </td>
+          <td><input class="cell-input outing-time ${hasOutingWarning ? "outing-warning" : ""}" type="text" inputmode="numeric" data-field="outingEnd" value="${day.outingEnd}" title="${outingWarningTitle}" ${needsOuting ? "" : "disabled"}></td>
           <td class="${isLowWork ? "low-work-cell" : ""}"><span class="output">${formatClock(result.workSeconds)}</span></td>
           <td class="${isShortOvertime ? "short-overtime-cell" : ""}"><span class="output">${formatClock(result.actualOvertimeSeconds)}</span></td>
           <td><input class="cell-input minute-input" type="text" inputmode="numeric" data-field="adjustmentMinutes" value="${day.adjustmentMinutes}" ${needsClock ? "" : "disabled"}></td>
@@ -1721,6 +1832,7 @@
           <td><span class="output">${formatMinutes(result.overtimePmsMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.specialMinutes)}</span></td>
           <td><span class="output">${formatMinutes(result.attendanceMinutes)}</span></td>
+          <td><span class="output">${formatMinutes(result.indirectWorkMinutes)}</span></td>
           <td><span class="muted">${result.note.join(", ")}</span></td>
         `;
         rowsEl.appendChild(tr);
@@ -1917,7 +2029,22 @@
         { key: "attendanceMinutes", label: "근태", distribution: "assign" }
       ];
 
-      pmsRowsEl.innerHTML = Array.from({ length: projectCount }, (_, projectIndex) => {
+      const indirectWorkRow = `
+        <tr class="pms-project-row pms-project-start pms-project-end">
+          <td class="project-cell">
+            <span class="project-name">공통</span>
+          </td>
+          <td class="pms-kind">간접근무</td>
+          ${week.days.map((result) => `
+            <td class="pms-date-cell ${result.indirectWorkMinutes > 0 ? "" : "assignment-disabled"}">
+              <span class="output">${formatMinutes(result.indirectWorkMinutes)}</span>
+            </td>
+          `).join("")}
+          <td class="pms-total-cell"><span class="output">${formatMinutes(week.indirectWorkMinutes)}</span></td>
+        </tr>
+      `;
+
+      pmsRowsEl.innerHTML = indirectWorkRow + Array.from({ length: projectCount }, (_, projectIndex) => {
         const rate = state.projectRates[projectIndex] ?? 0;
         return kinds.map((kind, kindIndex) => {
           const values = kind.distribution === "work"
@@ -1967,17 +2094,18 @@
         <tr>
           <td class="pms-project-head">참여율 합계</td>
           <td class="pms-kind-head"><span class="${totalRate === 100 ? "good" : "warn"}">${totalRate}%</span></td>
-          <td class="pms-date-cell" colspan="7">주간 근무 목표: ${formatMinutes(week.targetMinutes)} / 입력 가능 PMS 근무: ${formatMinutes(kindTotals[0])}, 잔근 ${formatMinutes(kindTotals[1])}, 특근 ${formatMinutes(kindTotals[2])}, 근태 ${formatMinutes(kindTotals[3])}</td>
+          <td class="pms-date-cell" colspan="7">주간 근무 목표: ${formatMinutes(week.targetMinutes)} / PMS 간접 근무: ${formatMinutes(week.indirectWorkMinutes)} / 입력 가능 PMS 근무: ${formatMinutes(kindTotals[0])}, 잔근 ${formatMinutes(kindTotals[1])}, 특근 ${formatMinutes(kindTotals[2])}, 근태 ${formatMinutes(kindTotals[3])}</td>
           <td class="pms-total-cell"></td>
         </tr>
       `;
     }
 
     function renderSummary(week) {
-      const standardWorkMet = week.standardWorkMinutes >= week.targetMinutes;
+      const weeklyWorkWithIndirect = week.pmsWorkMinutes + week.attendanceMinutes + week.indirectWorkMinutes;
+      const standardWorkMet = weeklyWorkWithIndirect >= week.targetMinutes;
       const overtimeWithinLimit = week.overtimeMinutes <= CONFIG.weeklyOvertimeLimitMinutes;
       targetMetric.textContent = formatHoursMinutes(week.targetMinutes);
-      workMetric.textContent = formatHoursMinutes(week.standardWorkMinutes);
+      workMetric.textContent = formatHoursMinutes(weeklyWorkWithIndirect);
       workMetric.className = `metric-value ${standardWorkMet ? "good" : "bad"}`;
       pmsMetric.textContent = formatMinutes(week.pmsAppliedMinutes);
       shortageMetric.textContent = formatMinutes(week.shortageMinutes);
@@ -1987,14 +2115,14 @@
 
       const messages = [];
       if (week.shortageMinutes === 0) {
-        messages.push("PMS 근무 부족이 없습니다.");
+        messages.push("PMS 공수 부족이 없습니다.");
       } else {
-        messages.push(`PMS 근무가 ${week.shortageMinutes}분 부족합니다.`);
+        messages.push(`PMS 공수가 ${week.shortageMinutes}분 부족합니다.`);
       }
       if (standardWorkMet) {
-        messages.push("주간 근무시간이 주간 표준 근무 시간 이상입니다.");
+        messages.push("주간 근무시간(근무+근태+간접)이 주간 표준 근무 시간 이상입니다.");
       } else {
-        messages.push("주간 근무시간이 주간 표준 근무 시간보다 부족합니다.");
+        messages.push("주간 근무시간(근무+근태+간접)이 주간 표준 근무 시간보다 부족합니다.");
       }
       if (state.autoOptimizeEnabled) {
         messages.push("잔근 자동 최적화가 켜져 있어 입력 변경 시 결과를 다시 계산합니다.");
@@ -2029,9 +2157,10 @@
       tablePmsOvertimeTotal.textContent = formatMinutes(week.overtimeMinutes);
       tableAttendanceTotal.textContent = formatMinutes(week.attendanceMinutes);
       tableSpecialTotal.textContent = formatMinutes(week.specialMinutes);
+      tableIndirectWorkTotal.textContent = formatMinutes(week.indirectWorkMinutes);
       tableShortageTotal.textContent = formatMinutes(week.shortageImpactMinutes);
       tableShortageTotal.className = "output bad";
-      tableLimitNote.textContent = `PMS 근무+근태=${formatMinutes(week.pmsWorkMinutes + week.attendanceMinutes)}`;
+      tableLimitNote.textContent = `PMS 근무+근태+간접근무=${formatMinutes(week.pmsWorkMinutes + week.attendanceMinutes + week.indirectWorkMinutes)}`;
       tableLimitNote.className = "muted";
     }
 
@@ -2057,28 +2186,39 @@
     function setFieldValue(index, field, value) {
       const day = state.days[index];
       if (field === "workType") {
+        if (isLeaveBlockedDay(day, index) && isLeaveWorkType(value)) {
+          value = "휴일";
+        }
         day.workType = value;
-        if (value === "출장" || value === "휴가" || value === "휴일" || value === "특근") {
+        if (value === "출장" || value === "연차" || value === "휴가" || value === "휴일" || value === "특근") {
           day.start = value === "출장" ? "09:00" : "";
           day.end = value === "출장" ? "18:00" : "";
           day.nonWorkMinutes = 0;
           day.nonWorkDetails = [];
+          day.outingEnabled = false;
           day.outingStart = "";
           day.outingEnd = "";
           day.adjustmentMinutes = 0;
         }
-        if (value === "출근" && (!day.start || !day.end)) {
+        if (!canUseOuting(day)) {
+          day.outingEnabled = false;
+          day.outingStart = "";
+          day.outingEnd = "";
+        }
+        if ((value === "출근" || value === "반차" || value === "반반차") && (!day.start || !day.end)) {
           day.start = "08:00";
           day.end = "18:00";
         }
-        if (value === "외출" && (!day.start || !day.end)) {
-          day.start = "08:00";
-          day.end = "18:00";
+      } else if (field === "outingEnabled") {
+        day.outingEnabled = Boolean(value);
+        if (!day.outingEnabled) {
+          day.outingStart = "";
+          day.outingEnd = "";
         }
-    } else if (isMinuteInputField(field)) {
-      day[field] = parseMinuteText(value);
-      if (field === "nonWorkMinutes") day.nonWorkDetails = [];
-    } else {
+      } else if (isMinuteInputField(field)) {
+        day[field] = parseMinuteText(value);
+        if (field === "nonWorkMinutes") day.nonWorkDetails = [];
+      } else {
         day[field] = value;
       }
       state.optimizedMinutes = Array(7).fill(null);
@@ -2094,7 +2234,7 @@
       if (!text) return "";
       const parts = text.split(":").map((part) => part.trim());
       if (parts.length < 2) return text;
-      const hours = Math.max(0, Math.min(23, Number(parts[0]) || 0));
+      const hours = Math.max(0, Math.min(29, Number(parts[0]) || 0));
       const minutes = Math.max(0, Math.min(59, Number(parts[1]) || 0));
       const seconds = parts.length >= 3 ? Math.max(0, Math.min(59, Number(parts[2]) || 0)) : null;
       return seconds == null
@@ -2141,13 +2281,13 @@
     function applySample() {
       const monday = parseDateValue(weekStartEl.value);
       const sample = [
-        ["출근", "07:33", "20:36:20", 26, "", "", 0],
-        ["외출", "08:00", "20:31:45", 0, "08:00", "13:00", 0],
-        ["휴일", "", "", 0, "", "", 0],
-        ["출근", "07:33:38", "20:05:01", 30, "", "", 10],
-        ["출근", "08:14:47", "18:22:20", 0, "", "", 0],
-        ["휴일", "", "", 0, "", "", 0],
-        ["휴일", "", "", 0, "", "", 0]
+        ["출근", "07:33", "20:36:20", 26, false, "", "", 0],
+        ["출근", "08:00", "20:31:45", 0, true, "08:00", "13:00", 0],
+        ["휴일", "", "", 0, false, "", "", 0],
+        ["출근", "07:33:38", "20:05:01", 30, false, "", "", 10],
+        ["출근", "08:14:47", "18:22:20", 0, false, "", "", 0],
+        ["휴일", "", "", 0, false, "", "", 0],
+        ["휴일", "", "", 0, false, "", "", 0]
       ];
       state.days = sample.map((item, index) => ({
         date: localDateValue(addDays(monday, index)),
@@ -2156,9 +2296,10 @@
         end: item[2],
         nonWorkMinutes: item[3],
         nonWorkDetails: [],
-        outingStart: item[4],
-        outingEnd: item[5],
-        adjustmentMinutes: item[6]
+        outingEnabled: item[4],
+        outingStart: item[5],
+        outingEnd: item[6],
+        adjustmentMinutes: item[7]
       }));
       state.optimizedMinutes = Array(7).fill(null);
       render();
@@ -2170,7 +2311,7 @@
       if (target.dataset.nonworkDetail) return;
       if (target.tagName === "SELECT") return;
       const index = Number(target.closest("tr").dataset.index);
-      setFieldValue(index, target.dataset.field, target.value);
+      setFieldValue(index, target.dataset.field, target.type === "checkbox" ? target.checked : target.value);
     });
 
     rowsEl.addEventListener("click", (event) => {
@@ -2185,7 +2326,7 @@
       if (!target.dataset.field) return;
       if (target.dataset.nonworkDetail) return;
       const index = Number(target.closest("tr").dataset.index);
-      updateField(index, target.dataset.field, target.value);
+      updateField(index, target.dataset.field, target.type === "checkbox" ? target.checked : target.value);
     });
 
     rowsEl.addEventListener("paste", (event) => {
